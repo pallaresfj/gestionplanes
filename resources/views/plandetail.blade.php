@@ -13,7 +13,7 @@
     <!-- Header -->
     <header class="bg-white shadow-md">
       <nav x-data="{ open: false }" class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-        <a href="index.html" class="text-2xl font-bold text-gray-900">Planes de area<em class="text-indigo-600">.</em></a>
+        <a href="index.html" class="text-2xl font-bold text-gray-900">Gestión Académica<em class="text-indigo-600">.</em></a>
 
         <button @click="open = !open" class="md:hidden text-gray-700 focus:outline-none transition-transform duration-300 transform" :class="{'rotate-45': open}">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -32,8 +32,8 @@
           :class="{'block': open, 'hidden': !open, 'md:flex': true}"
           class="flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6 text-gray-700"
         >
-          <li><a href="/" class="text-indigo-600 font-semibold">Home</a></li>
-          <li><a href="/admin" class="hover:text-indigo-500 transition">Login</a></li>
+          <li><a href="/" class="hover:text-indigo-500 transition">Inicio</a></li>
+          <li><a href="/admin" class="hover:text-indigo-500 transition">Ingresar</a></li>
         </ul>
       </nav>
     </header>
@@ -41,8 +41,8 @@
     <!-- Banner Starts Here -->
     <div class="bg-gray-50 text-center py-12">
       <section class="max-w-7xl mx-auto px-4">
-        <h4 class="text-indigo-600 text-lg font-semibold mb-2">Últimos Planes</h4>
-        <h2 class="text-4xl font-bold">Nuestros Planes de área</h2>
+        <h4 class="text-indigo-600 text-lg font-semibold mb-2">Plan de área</h4>
+        <h2 class="text-4xl font-bold">{{ $plan->name }}</h2>
       </section>
     </div>
     <!-- Banner Ends Here -->
