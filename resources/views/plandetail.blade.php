@@ -13,7 +13,9 @@
     <!-- Header -->
     <header class="bg-white shadow-md">
       <nav x-data="{ open: false }" class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-        <a href="index.html" class="text-2xl font-bold text-gray-900">Gestión Académica<em class="text-indigo-600">.</em></a>
+        <a href="/" class="flex items-center space-x-2">
+          <img src="{{ asset('images/logo.svg') }}" alt="Logo" class="h-16">
+        </a>
 
         <button @click="open = !open" class="md:hidden text-gray-700 focus:outline-none transition-transform duration-300 transform" :class="{'rotate-45': open}">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,20 +67,11 @@
                 </div>
             </article>
       </div>
-
-      <div class="mt-10 flex justify-center space-x-3 text-gray-600">
-        <a href="#" class="px-3 py-1 rounded hover:bg-indigo-100 hover:text-indigo-600 transition">1</a>
-        <a href="#" class="px-3 py-1 rounded bg-indigo-600 text-white">2</a>
-        <a href="#" class="px-3 py-1 rounded hover:bg-indigo-100 hover:text-indigo-600 transition">3</a>
-        <a href="#" class="px-3 py-1 rounded hover:bg-indigo-100 hover:text-indigo-600 transition" aria-label="Next">
-          <svg class="w-5 h-5 inline" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 111.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
-        </a>
-      </div>
     </section>
 
     <footer class="bg-gray-900 text-gray-300 py-6">
       <div class="max-w-7xl mx-auto text-center text-sm">
-        <p>Copyright 2020 Stand Blog Co. | Design: <a rel="nofollow" href="https://templatemo.com" target="_parent" class="text-indigo-500 hover:underline">TemplateMo</a></p>
+        <p>Copyright 2025. IED Agropecuaria José María Herrera - Pivijay | Diseño <a rel="nofollow" href="https://asyservicios.com" target="_blank" class="text-indigo-500 hover:underline">AS&Servicios.com</a></p>
       </div>
     </footer>
 
