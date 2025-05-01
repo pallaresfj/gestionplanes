@@ -31,13 +31,6 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->profile(isSimple: false)
             ->sidebarCollapsibleOnDesktop()
-            /* ->colors([
-                'danger' => Color::Red,
-                'info' => Color::Sky,
-                'primary' => Color::Emerald,
-                'success' => Color::Teal,
-                'warning' => Color::Orange,
-            ]) */
             ->colors([
                 'primary' => '#1d6362',
                 'success' => '#6b9a34',
