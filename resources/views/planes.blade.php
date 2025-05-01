@@ -34,8 +34,8 @@
           :class="{'block': open, 'hidden': !open, 'md:flex': true}"
           class="flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6 text-gray-700"
         >
-          <li><a href="/" class="text-indigo-600 font-semibold">Inicio</a></li>
-          <li><a href="/planes" class="hover:text-indigo-500 transition">Planes</a></li>
+          <li><a href="/" class="hover:text-indigo-500 transition">Inicio</a></li>
+          <li><a href="/planes" class="text-indigo-600 font-semibold">Planes</a></li>
           <li><a href="/centers" class="hover:text-indigo-500 transition">Centros</a></li>
           <li><a href="/admin" class="hover:text-indigo-500 transition">Ingresar</a></li>
         </ul>
@@ -52,7 +52,55 @@
     <!-- Banner Ends Here -->
 
     <section class="max-w-7xl mx-auto px-4 py-10">
-      
+      <form method="GET" action="{{ route('planes') }}">
+          <div class="flex flex-col md:flex-row gap-4 mb-6">
+              <div class="flex-1">
+                  <input
+                      type="text"
+                      name="search"
+                      value="{{ request('search') }}"
+                      placeholder="Buscar plan..."
+                      class="border rounded px-4 py-2 w-full"
+                  >
+              </div>
+              <div class="flex flex-col md:flex-row gap-2 md:w-auto w-full">
+                  <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded w-full md:w-auto">
+                      Buscar
+                  </button>
+                  <a href="{{ route('planes') }}" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 w-full md:w-auto text-center">
+                      Limpiar
+                  </a>
+              </div>
+          </div>
+      </form>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @foreach ($planes as $plan)
+            <article class="bg-white shadow-md rounded-lg overflow-hidden">
+                <a href="/plan/{{ $plan->id }}" class="hover:opacity-75">
+                    <img src="/storage/{{ $plan->cover }}" alt="" class="w-full h-48 object-cover">
+                </a> 
+                <div class="p-6">
+                    <span class="text-indigo-600 text-sm font-semibold">{{ $plan->year }}</span>
+                    <a href="/plan/{{ $plan->id }}" class="block mt-2 mb-3 hover:text-indigo-500 transition">
+                        <h4 class="text-xl font-semibold">{{ $plan->name }}</h4>
+                    </a>
+                    <ul class="flex space-x-4 text-sm text-gray-500 mb-4">
+                        <li class="text-indigo-500 transition">Docentes del área: {{ $plan->users->pluck('name')->join(', ') }}.</li>
+                    </ul>
+                    <p class="text-gray-600 mb-4">{!! \Illuminate\Support\Str::limit($plan->justification, 150, '...') !!}</p>
+                    <div>
+                        <ul class="flex items-center space-x-2 text-indigo-600 text-sm font-semibold">
+                            <li><i class="fa fa-tags"></i></li>
+                            <li><a href="/plan/{{ $plan->id }}" class="hover:underline">Ver Plan de área</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </article>
+        @endforeach
+      </div>
+      <div class="mt-4 justify-center space-x-3 text-gray-600">
+        {{ $planes->links() }}
+      </div>
     </section>
 
     <footer class="bg-gray-900 text-gray-300 py-6">
