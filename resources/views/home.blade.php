@@ -94,9 +94,21 @@
             </article>
         @endforeach
       </div>
-      <div class="mt-4 justify-center space-x-3 text-gray-600">
-        {{ $planes->links() }}
-      </div>
+      <form method="GET" action="{{ route('home') }}" class="mt-6 justify-center">
+          <input type="hidden" name="search" value="{{ request('search') }}">
+          <label class="flex items-center space-x-2 text-sm">
+              <span>Mostrar:</span>
+              <select name="per_page" class="border rounded px-2 py-1" onchange="this.form.submit()">
+                  <option value="3" {{ request('per_page') == 3 ? 'selected' : '' }}>3</option>
+                  <option value="6" {{ request('per_page') == 6 ? 'selected' : '' }}>6</option>
+                  <option value="9" {{ request('per_page') == 9 ? 'selected' : '' }}>9</option>
+              </select>
+          </label>
+          <div class="mt-4 justify-center text-gray-600">
+            {{ $planes->appends(['search' => request('search'), 'per_page' => request('per_page')])->links() }}
+          </div>
+      </form>
+      
     </section>
 
     <footer class="bg-gray-900 text-gray-300 py-6">

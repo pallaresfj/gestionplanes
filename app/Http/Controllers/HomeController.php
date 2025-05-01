@@ -15,7 +15,8 @@ class HomeController extends Controller
             $query->where('name', 'like', "%{$search}%");
         }
 
-        $planes = $query->paginate(3)->withQueryString();
+        $perPage = $request->input('per_page', 3);
+        $planes = $query->paginate($perPage)->withQueryString();
 
         return view('home', ['planes' => $planes]);
     }
