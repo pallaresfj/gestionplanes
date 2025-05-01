@@ -85,7 +85,14 @@
                         <h4 class="text-xl font-semibold">{{ $center->name }}</h4>
                     </a>
                     <ul class="flex space-x-4 text-sm text-gray-500 mb-4">
-                        {{-- <li class="text-indigo-500 transition">Docentes del centro: {{ $center->users->pluck('name')->join(', ') }}.</li> --}}
+                      <li class="text-indigo-500 transition">
+                        Docentes del centro:
+                        @if($center->teachers->count())
+                            {{ $center->teachers->pluck('full_name')->join(', ') }}
+                        @else
+                            No hay docentes asignados.
+                        @endif
+                    </li>
                     </ul>
                     <p class="text-gray-600 mb-4">{!! \Illuminate\Support\Str::limit($center->description, 150, '...') !!}</p>
                     <div>

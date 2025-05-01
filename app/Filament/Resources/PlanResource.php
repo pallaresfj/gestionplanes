@@ -190,17 +190,6 @@ class PlanResource extends Resource
                     ->width(100)
                     ->height(59),
             ])
-            ->groups([
-                Group::make('name')
-                ->label('Área')
-                ->collapsible(),
-                Group::make('users.name')
-                ->label('Docente')
-                ->collapsible()
-                ->titlePrefixedWithLabel(false),
-            ])
-            ->defaultGroup('name')
-            ->groupingDirectionSettingHidden()
             ->filters([
                 //
             ])

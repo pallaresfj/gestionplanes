@@ -61,83 +61,155 @@
                     <span class="text-indigo-600 text-sm font-semibold">{{ $center->academic_year }}</span>
                     <h4 class="block mt-2 mb-3 transition text-xl font-semibold">{{ $center->name }}</h4>
                     <ul class="flex space-x-4 text-sm text-gray-500 mb-4">
-                      {{-- <li class="text-indigo-500 transition">Docentes del centro: {{ $center->users->pluck('name')->join(', ') }}.</li> --}}
+                      <li class="text-indigo-500 transition">
+                        Docentes del centro:
+                        @if($center->teachers->count())
+                            {{ $center->teachers->pluck('full_name')->join(', ') }}
+                        @else
+                            No hay docentes asignados.
+                        @endif
+                    </li>
                     </ul>
-                    {{-- <div x-data="{ tab: 'justification' }">
+                    <div x-data="{ tab: 'description' }">
                         <div class="flex flex-wrap border-b border-gray-200 mb-6 gap-2 w-full">
-                            <button @click="tab = 'justification'"
-                                :class="tab === 'justification' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                            <button @click="tab = 'description'"
+                                :class="tab === 'description' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
-                                Justificación
+                                Descripción
                             </button>
-                            <button @click="tab = 'objectives'"
-                                :class="tab === 'objectives' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                            <button @click="tab = 'objective'"
+                                :class="tab === 'objective' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
-                                Objetivos
+                                Objetivo
                             </button>
-                            <button @click="tab = 'methodology'"
-                                :class="tab === 'methodology' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                            <button @click="tab = 'students'"
+                                :class="tab === 'students' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
-                                Metodología
+                                Estudiantes
                             </button>
-                            <button @click="tab = 'subjects'"
-                                :class="tab === 'subjects' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                            <button @click="tab = 'activities'"
+                                :class="tab === 'activities' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
-                                Asignaturas
+                                Actividades
+                            </button>
+                            <button @click="tab = 'budgets'"
+                                :class="tab === 'budgets' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                                class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
+                                Recursos
                             </button>
                         </div>
 
                         <div>
-                            <div x-show="tab === 'justification'" x-cloak>
-                                <h2 class="text-xl font-semibold mb-4">Justificación</h2>
+                            <div x-show="tab === 'description'" x-cloak>
+                                <h2 class="text-xl font-semibold mb-4">Descripción</h2>
                                 <div class="prose max-w-none">
-                                    {!! $plan->justification !!}
+                                    {!! $center->description !!}
                                 </div>
                             </div>
 
-                            <div x-show="tab === 'objectives'" x-cloak>
-                                <h2 class="text-xl font-semibold mb-4">Objetivos</h2>
+                            <div x-show="tab === 'objective'" x-cloak>
+                                <h2 class="text-xl font-semibold mb-4">Objetivo</h2>
                                 <div class="prose max-w-none">
-                                    {!! $plan->objectives !!}
+                                    {!! $center->objective !!}
                                 </div>
                             </div>
 
-                            <div x-show="tab === 'methodology'" x-cloak>
-                                <h2 class="text-xl font-semibold mb-4">Metodología</h2>
-                                <div class="prose max-w-none">
-                                    {!! $plan->methodology !!}
-                                </div>
+                            <div x-show="tab === 'students'" x-cloak>
+                              <h2 class="text-xl font-semibold mb-4">Estudiantes</h2>
+                              @if ($center->students->count())
+                                  <div class="overflow-x-auto">
+                                      <table class="min-w-full bg-white border border-gray-200">
+                                          <thead>
+                                              <tr>
+                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Curso</th>
+                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Nombre</th>
+                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Documento</th>
+                                              </tr>
+                                          </thead>
+                                          <tbody>
+                                              @foreach ($center->students as $student)
+                                                  <tr class="hover:bg-gray-50">
+                                                      <td class="px-4 py-2 border-b text-sm text-gray-700">{{ $student->grade }}</td>
+                                                      <td class="px-4 py-2 border-b text-sm text-gray-700">{{ $student->full_name }}</td>
+                                                      <td class="px-4 py-2 border-b text-sm text-gray-700">{{ $student->identification }}</td>
+                                                  </tr>
+                                              @endforeach
+                                          </tbody>
+                                      </table>
+                                  </div>
+                              @else
+                                  <p class="text-gray-500">No hay estudiantes registrados para este centro de interés.</p>
+                              @endif
                             </div>
 
-                            <div x-show="tab === 'subjects'" x-cloak>
-                                <h2 class="text-xl font-semibold mb-4">Asignaturas</h2>
-                                @if ($plan->subjects->count())
-                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                        @foreach ($plan->subjects as $subject)
-                                            <div class="bg-gray-50 rounded-lg p-4 shadow-sm hover:shadow transition">
-                                                <a href="/subject/{{ $subject->id }}" class="font-medium text-indigo-600 hover:underline">
-                                                    {{ $subject->name }}
-                                                </a>
-                                                <p class="text-sm text-gray-500 mb-2">{{ $subject->grade }}° Grado | {{ $subject->weekly_hours }} Horas.</p>
-                                                @if ($subject->users->count())
-                                                    <p class="text-sm text-gray-700 font-semibold mb-1">Docentes:</p>
-                                                    <ul class="list-disc list-inside text-sm text-gray-600">
-                                                        @foreach ($subject->users as $user)
-                                                            <li>{{ $user->name }}</li>
-                                                        @endforeach
-                                                    </ul>
-                                                @else
-                                                    <p class="text-sm text-gray-500">Sin docentes asignados.</p>
-                                                @endif
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @else
-                                    <p class="text-gray-500">No hay asignaturas asociadas a este plan.</p>
-                                @endif
+                            <div x-show="tab === 'activities'" x-cloak>
+                              <h2 class="text-xl font-semibold mb-4">Actividades</h2>
+                              @if ($center->activities->count())
+                                  <div class="overflow-x-auto">
+                                      <table class="min-w-full bg-white border border-gray-200">
+                                          <thead>
+                                              <tr>
+                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Actividad</th>
+                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Objetivo</th>
+                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Metodología</th>
+                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Materiales</th>
+                                              </tr>
+                                          </thead>
+                                          <tbody>
+                                              @foreach ($center->activities as $activity)
+                                                  <tr class="hover:bg-gray-50">
+                                                      <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{{ $activity->activity }}</td>
+                                                      <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{{ $activity->objective }}</td>
+                                                      <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $activity->methodology !!}</td>
+                                                      <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $activity->materials !!}</td>
+                                                  </tr>
+                                              @endforeach
+                                          </tbody>
+                                      </table>
+                                  </div>
+                              @else
+                                  <p class="text-gray-500">No hay actividades registradas para este centro de interés.</p>
+                              @endif
                             </div>
+
+                            <div x-show="tab === 'budgets'" x-cloak>
+                              <h2 class="text-xl font-semibold mb-4">Recursos</h2>
+                              @if ($center->budgets->count())
+                                  <div class="overflow-x-auto">
+                                      <table class="min-w-full bg-white border border-gray-200">
+                                          <thead>
+                                              <tr>
+                                                  <th class="px-4 py-2 border-b text-right text-sm font-semibold text-gray-700">Cantidad</th>
+                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Item</th>
+                                                  <th class="px-4 py-2 border-b text-right text-sm font-semibold text-gray-700">Valor Unitario</th>
+                                                  <th class="px-4 py-2 border-b text-right text-sm font-semibold text-gray-700">Total</th>
+                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Observaciones</th>
+                                              </tr>
+                                          </thead>
+                                          <tbody>
+                                              @foreach ($center->budgets as $budget)
+                                                  <tr class="hover:bg-gray-50">
+                                                      <td class="px-4 py-2 border-b text-sm text-gray-700 text-right">{{ $budget->quantity }}</td>
+                                                      <td class="px-4 py-2 border-b text-sm text-gray-700">{{ $budget->item }}</td>
+                                                      <td class="px-4 py-2 border-b text-sm text-gray-700 text-right">
+                                                        {{ '$' . number_format($budget->unit_value, 0, ',', '.') }}
+                                                      </td>
+                                                      <td class="px-4 py-2 border-b text-sm text-gray-700 text-right">
+                                                        {{ '$' . number_format($budget->quantity * $budget->unit_value, 0, ',', '.') }}
+                                                      </td>
+                                                      <td class="px-4 py-2 border-b text-sm text-gray-700">{{ $budget->observations }}</td>
+                                                  </tr>
+                                              @endforeach
+                                          </tbody>
+                                      </table>
+                                  </div>
+                              @else
+                                  <p class="text-gray-500">No hay recursos registrados para este centro de interés.</p>
+                              @endif
+                            </div>
+
                         </div>
-                    </div> --}}
+                    </div>
                 </div>
             </article>
       </div>

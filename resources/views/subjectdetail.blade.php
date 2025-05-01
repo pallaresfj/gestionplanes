@@ -111,11 +111,11 @@
                                             <tbody>
                                                 @foreach ($subject->topics as $topic)
                                                     <tr class="hover:bg-gray-50">
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{{ $topic->period }}</td>
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{!! $topic->standard !!}</td>
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{!! $topic->dba !!}</td>
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{!! $topic->competencies !!}</td>
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{!! $topic->contents !!}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{{ $topic->period }}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $topic->standard !!}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $topic->dba !!}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $topic->competencies !!}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $topic->contents !!}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -144,12 +144,12 @@
                                             <tbody>
                                                 @foreach ($subject->rubrics as $rubric)
                                                     <tr class="hover:bg-gray-50">
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{{ $rubric->period }}</td>
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{!! $rubric->criterion !!}</td>
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{!! $rubric->superior_level !!}</td>
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{!! $rubric->high_level !!}</td>
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{!! $rubric->basic_level !!}</td>
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{!! $rubric->low_level !!}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{{ $rubric->period }}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $rubric->criterion !!}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $rubric->superior_level !!}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $rubric->high_level !!}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $rubric->basic_level !!}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $rubric->low_level !!}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>

@@ -46,13 +46,49 @@
     <div class="bg-gray-50 text-center py-12">
       <section class="max-w-7xl mx-auto px-4">
         <h4 class="text-indigo-600 text-lg font-semibold mb-2">IED Agropecuaria José María Herrera</h4>
-        <h2 class="text-4xl font-bold">Nuestros Planes de área</h2>
+        <h2 class="text-4xl font-bold">Documentos de Planeación</h2>
       </section>
     </div>
     <!-- Banner Ends Here -->
 
-    <section class="max-w-7xl mx-auto px-4 py-10">
-      
+    <section class="max-w-7xl mx-auto px-4 pt-10 pb-20">
+      <div class="grid gap-8 md:grid-cols-2 md:gap-12">
+        <!-- Call to Action 1: Planes de área -->
+        <div class="bg-white shadow-lg border border-gray-200 rounded-2xl flex flex-col">
+          <a href="/planes">
+            <img src="{{ asset('images/planes.jpg') }}" alt="Planes de área" class="w-full h-48 object-cover rounded-t-2xl">
+          </a>
+          <div class="p-6 flex flex-col flex-grow">
+            <a href="/planes">
+              <h3 class="text-3xl font-extrabold mb-4 text-indigo-700">Planes de área</h3>
+            </a>
+            <p class="text-gray-600 mb-4 flex-grow">
+              Los planes de área son documentos pedagógicos que organizan y estructuran los contenidos, objetivos, competencias y metodologías para cada asignatura, permitiendo orientar el proceso educativo de manera coherente y sistemática a lo largo del año escolar.
+            </p>
+            <div class="mt-6">
+              <a href="/planes" class="inline-block bg-indigo-600 text-white px-5 py-3 rounded-lg text-base font-semibold hover:bg-indigo-500 transition">Ver</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Call to Action 2: Centros de interés -->
+        <div class="bg-white shadow-lg border border-gray-200 rounded-2xl flex flex-col">
+          <a href="/centers">
+            <img src="{{ asset('images/centros.jpg') }}" alt="Centros de interés" class="w-full h-48 object-cover rounded-t-2xl">
+          </a>
+          <div class="p-6 flex flex-col flex-grow">
+            <a href="/centers">
+              <h3 class="text-3xl font-extrabold mb-4 text-indigo-700">Centros de interés</h3>
+            </a>
+            <p class="text-gray-600 mb-4 flex-grow">
+              Los centros de interés son estrategias pedagógicas que agrupan actividades y recursos educativos en torno a temas relevantes y motivadores para los estudiantes, fomentando el aprendizaje significativo y la participación activa en el desarrollo de competencias clave.
+            </p>
+            <div class="mt-6">
+              <a href="/centers" class="inline-block bg-indigo-600 text-white px-5 py-3 rounded-lg text-base font-semibold hover:bg-indigo-500 transition">Ver</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <footer class="bg-gray-900 text-gray-300 py-6">
