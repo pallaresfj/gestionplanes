@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Plan;
+use App\Models\Subject;
 
 class HomeController extends Controller
 {
@@ -24,5 +25,10 @@ class HomeController extends Controller
     {
         $plan = Plan::where('id', $id)->first();
         return view('plandetail', ['plan' => $plan]);
+    }
+    public function subjectdetail($id)
+    {
+        $subject = Subject::where('id', $id)->first();
+        return view('subjectdetail', ['subject' => $subject]);
     }
 }

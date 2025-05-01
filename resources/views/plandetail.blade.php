@@ -52,18 +52,88 @@
     <section class="max-w-7xl mx-auto px-4 py-10">
       <div class="w-full">
             <article class="bg-white shadow-md rounded-lg overflow-hidden w-full">
-                <a href="/{{ $plan->id }}" class="hover:opacity-75">
-                    <img src="/storage/{{ $plan->cover }}" alt="" class="w-full h-48 object-cover">
-                </a> 
+                <img src="/storage/{{ $plan->cover }}" alt="" class="w-full h-48 object-cover">
                 <div class="p-6">
                     <span class="text-indigo-600 text-sm font-semibold">{{ $plan->year }}</span>
-                    <a href="/{{ $plan->id }}" class="block mt-2 mb-3 hover:text-indigo-500 transition">
-                        <h4 class="text-xl font-semibold">{{ $plan->name }}</h4>
-                    </a>
+                    <h4 class="block mt-2 mb-3 transition text-xl font-semibold">{{ $plan->name }}</h4>
                     <ul class="flex space-x-4 text-sm text-gray-500 mb-4">
-                      <li><a href="#" class="hover:text-indigo-500 transition">Docentes del área: {{ $plan->users->pluck('name')->join(', ') }}.</a></li>
+                      <li class="text-indigo-500 transition">Docentes del área: {{ $plan->users->pluck('name')->join(', ') }}.</li>
                     </ul>
-                    <p class="text-gray-600 mb-4">{!! $plan->justification !!}</p>
+                    <div x-data="{ tab: 'justification' }">
+                        <div class="flex border-b border-gray-200 mb-6">
+                            <button @click="tab = 'justification'"
+                                :class="tab === 'justification' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                                class="px-4 py-2 focus:outline-none">
+                                Justificación
+                            </button>
+                            <button @click="tab = 'objectives'"
+                                :class="tab === 'objectives' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                                class="px-4 py-2 focus:outline-none">
+                                Objetivos
+                            </button>
+                            <button @click="tab = 'methodology'"
+                                :class="tab === 'methodology' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                                class="px-4 py-2 focus:outline-none">
+                                Metodología
+                            </button>
+                            <button @click="tab = 'subjects'"
+                                :class="tab === 'subjects' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                                class="px-4 py-2 focus:outline-none">
+                                Asignaturas
+                            </button>
+                        </div>
+
+                        <div>
+                            <div x-show="tab === 'justification'" x-cloak>
+                                <h2 class="text-xl font-semibold mb-4">Justificación</h2>
+                                <div class="prose max-w-none">
+                                    {!! $plan->justification !!}
+                                </div>
+                            </div>
+
+                            <div x-show="tab === 'objectives'" x-cloak>
+                                <h2 class="text-xl font-semibold mb-4">Objetivos</h2>
+                                <div class="prose max-w-none">
+                                    {!! $plan->objectives !!}
+                                </div>
+                            </div>
+
+                            <div x-show="tab === 'methodology'" x-cloak>
+                                <h2 class="text-xl font-semibold mb-4">Metodología</h2>
+                                <div class="prose max-w-none">
+                                    {!! $plan->methodology !!}
+                                </div>
+                            </div>
+
+                            <div x-show="tab === 'subjects'" x-cloak>
+                                <h2 class="text-xl font-semibold mb-4">Asignaturas</h2>
+                                @if ($plan->subjects->count())
+                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                        @foreach ($plan->subjects as $subject)
+                                            <div class="bg-gray-50 rounded-lg p-4 shadow-sm hover:shadow transition">
+                                                <a href="/subject/{{ $subject->id }}" class="font-medium text-indigo-600 hover:underline">
+                                                    {{ $subject->name }}
+                                                </a>
+                                                <p class="text-sm text-gray-500 mb-2">{{ $subject->grade }}° Grado | {{ $subject->weekly_hours }} Horas.</p>
+                                                @if ($subject->users->count())
+                                                    <p class="text-sm text-gray-700 font-semibold mb-1">Docentes:</p>
+                                                    <ul class="list-disc list-inside text-sm text-gray-600">
+                                                        @foreach ($subject->users as $user)
+                                                            <li>{{ $user->name }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                @else
+                                                    <p class="text-sm text-gray-500">Sin docentes asignados.</p>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <p class="text-gray-500">No hay asignaturas asociadas a este plan.</p>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </article>
       </div>
