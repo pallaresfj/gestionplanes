@@ -94,8 +94,7 @@
             </article>
         @endforeach
       </div>
-
-      <div class="mt-10 flex justify-center space-x-3 text-gray-600">
+      <div class="mt-4 justify-center space-x-3 text-gray-600">
         {{ $planes->links() }}
       </div>
     </section>
