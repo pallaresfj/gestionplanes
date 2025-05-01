@@ -35,6 +35,8 @@
           class="flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6 text-gray-700"
         >
           <li><a href="/" class="hover:text-indigo-500 transition">Inicio</a></li>
+          <li><a href="/planes" class="text-indigo-600 font-semibold">Planes</a></li>
+          <li><a href="/centers" class="hover:text-indigo-500 transition">Centros</a></li>
           <li><a href="/admin" class="hover:text-indigo-500 transition">Ingresar</a></li>
         </ul>
       </nav>
@@ -43,7 +45,10 @@
     <!-- Banner Starts Here -->
     <div class="bg-gray-50 text-center py-12">
       <section class="max-w-7xl mx-auto px-4">
-        <h4 class="text-indigo-600 text-lg font-semibold mb-2">Plan de área</h4>
+        <a href="/planes">
+          <h4 class="text-indigo-600 text-lg hover:underline font-semibold mb-2">Planes de área</h4>
+        </a>
+        
         <h2 class="text-4xl font-bold">{{ $plan->name }}</h2>
       </section>
     </div>
@@ -60,25 +65,25 @@
                       <li class="text-indigo-500 transition">Docentes del área: {{ $plan->users->pluck('name')->join(', ') }}.</li>
                     </ul>
                     <div x-data="{ tab: 'justification' }">
-                        <div class="flex border-b border-gray-200 mb-6">
+                        <div class="flex flex-wrap border-b border-gray-200 mb-6 gap-2 w-full">
                             <button @click="tab = 'justification'"
                                 :class="tab === 'justification' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
-                                class="px-4 py-2 focus:outline-none">
+                                class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Justificación
                             </button>
                             <button @click="tab = 'objectives'"
                                 :class="tab === 'objectives' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
-                                class="px-4 py-2 focus:outline-none">
+                                class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Objetivos
                             </button>
                             <button @click="tab = 'methodology'"
                                 :class="tab === 'methodology' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
-                                class="px-4 py-2 focus:outline-none">
+                                class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Metodología
                             </button>
                             <button @click="tab = 'subjects'"
                                 :class="tab === 'subjects' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
-                                class="px-4 py-2 focus:outline-none">
+                                class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Asignaturas
                             </button>
                         </div>

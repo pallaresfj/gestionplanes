@@ -35,6 +35,8 @@
           class="flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6 text-gray-700"
         >
           <li><a href="/" class="text-indigo-600 font-semibold">Inicio</a></li>
+          <li><a href="/planes" class="hover:text-indigo-500 transition">Planes</a></li>
+          <li><a href="/centers" class="hover:text-indigo-500 transition">Centros</a></li>
           <li><a href="/admin" class="hover:text-indigo-500 transition">Ingresar</a></li>
         </ul>
       </nav>
@@ -44,71 +46,49 @@
     <div class="bg-gray-50 text-center py-12">
       <section class="max-w-7xl mx-auto px-4">
         <h4 class="text-indigo-600 text-lg font-semibold mb-2">IED Agropecuaria José María Herrera</h4>
-        <h2 class="text-4xl font-bold">Nuestros Planes de área</h2>
+        <h2 class="text-4xl font-bold">Documentos de Planeación</h2>
       </section>
     </div>
     <!-- Banner Ends Here -->
 
-    <section class="max-w-7xl mx-auto px-4 py-10">
-      <form method="GET" action="{{ route('home') }}">
-          <div class="flex flex-col md:flex-row gap-4 mb-6">
-              <input
-                  type="text"
-                  name="search"
-                  value="{{ request('search') }}"
-                  placeholder="Buscar plan..."
-                  class="flex-1 border rounded px-4 py-2 w-full"
-              >
-              <div class="flex gap-2">
-                  <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
-                      Buscar
-                  </button>
-                  <a href="{{ route('home') }}" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">
-                      Limpiar
-                  </a>
-              </div>
+    <section class="max-w-7xl mx-auto px-4 pt-10 pb-20">
+      <div class="grid gap-8 md:grid-cols-2 md:gap-12">
+        <!-- Call to Action 1: Planes de área -->
+        <div class="bg-white shadow-lg border border-gray-200 rounded-2xl flex flex-col">
+          <a href="/planes">
+            <img src="{{ asset('images/planes.jpg') }}" alt="Planes de área" class="w-full h-48 object-cover rounded-t-2xl">
+          </a>
+          <div class="p-6 flex flex-col flex-grow">
+            <a href="/planes">
+              <h3 class="text-3xl font-extrabold mb-4 text-indigo-700">Planes de área</h3>
+            </a>
+            <p class="text-gray-600 mb-4 flex-grow">
+              Los planes de área son documentos pedagógicos que organizan y estructuran los contenidos, objetivos, competencias y metodologías para cada asignatura, permitiendo orientar el proceso educativo de manera coherente y sistemática a lo largo del año escolar.
+            </p>
+            <div class="mt-6">
+              <a href="/planes" class="inline-block bg-indigo-600 text-white px-5 py-3 rounded-lg text-base font-semibold hover:bg-indigo-500 transition">Ver</a>
+            </div>
           </div>
-      </form>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        @foreach ($planes as $plan)
-            <article class="bg-white shadow-md rounded-lg overflow-hidden">
-                <a href="/plan/{{ $plan->id }}" class="hover:opacity-75">
-                    <img src="/storage/{{ $plan->cover }}" alt="" class="w-full h-48 object-cover">
-                </a> 
-                <div class="p-6">
-                    <span class="text-indigo-600 text-sm font-semibold">{{ $plan->year }}</span>
-                    <a href="/plan/{{ $plan->id }}" class="block mt-2 mb-3 hover:text-indigo-500 transition">
-                        <h4 class="text-xl font-semibold">{{ $plan->name }}</h4>
-                    </a>
-                    <ul class="flex space-x-4 text-sm text-gray-500 mb-4">
-                        <li class="text-indigo-500 transition">Docentes del área: {{ $plan->users->pluck('name')->join(', ') }}.</li>
-                    </ul>
-                    <p class="text-gray-600 mb-4">{!! \Illuminate\Support\Str::limit($plan->justification, 150, '...') !!}</p>
-                    <div>
-                        <ul class="flex items-center space-x-2 text-indigo-600 text-sm font-semibold">
-                            <li><i class="fa fa-tags"></i></li>
-                            <li><a href="/plan/{{ $plan->id }}" class="hover:underline">Ver Plan de área</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </article>
-        @endforeach
+        </div>
+
+        <!-- Call to Action 2: Centros de interés -->
+        <div class="bg-white shadow-lg border border-gray-200 rounded-2xl flex flex-col">
+          <a href="/centers">
+            <img src="{{ asset('images/centros.jpg') }}" alt="Centros de interés" class="w-full h-48 object-cover rounded-t-2xl">
+          </a>
+          <div class="p-6 flex flex-col flex-grow">
+            <a href="/centers">
+              <h3 class="text-3xl font-extrabold mb-4 text-indigo-700">Centros de interés</h3>
+            </a>
+            <p class="text-gray-600 mb-4 flex-grow">
+              Los centros de interés son estrategias pedagógicas que agrupan actividades y recursos educativos en torno a temas relevantes y motivadores para los estudiantes, fomentando el aprendizaje significativo y la participación activa en el desarrollo de competencias clave.
+            </p>
+            <div class="mt-6">
+              <a href="/centers" class="inline-block bg-indigo-600 text-white px-5 py-3 rounded-lg text-base font-semibold hover:bg-indigo-500 transition">Ver</a>
+            </div>
+          </div>
+        </div>
       </div>
-      <form method="GET" action="{{ route('home') }}" class="mt-6 justify-center">
-          <input type="hidden" name="search" value="{{ request('search') }}">
-          <label class="flex items-center space-x-2 text-sm">
-              <span>Mostrar:</span>
-              <select name="per_page" class="border rounded px-2 py-1" onchange="this.form.submit()">
-                  <option value="3" {{ request('per_page') == 3 ? 'selected' : '' }}>3</option>
-                  <option value="6" {{ request('per_page') == 6 ? 'selected' : '' }}>6</option>
-                  <option value="9" {{ request('per_page') == 9 ? 'selected' : '' }}>9</option>
-              </select>
-          </label>
-          <div class="mt-4 justify-center text-gray-600">
-            {{ $planes->appends(['search' => request('search'), 'per_page' => request('per_page')])->links() }}
-          </div>
-      </form>
-      
     </section>
 
     <footer class="bg-gray-900 text-gray-300 py-6">

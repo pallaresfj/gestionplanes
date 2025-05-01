@@ -35,6 +35,8 @@
           class="flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6 text-gray-700"
         >
           <li><a href="/" class="hover:text-indigo-500 transition">Inicio</a></li>
+          <li><a href="/planes" class="text-indigo-600 font-semibold">Planes</a></li>
+          <li><a href="#" class="hover:text-indigo-500 transition">Centros</a></li>
           <li><a href="/admin" class="hover:text-indigo-500 transition">Ingresar</a></li>
         </ul>
       </nav>
@@ -43,7 +45,9 @@
     <!-- Banner Starts Here -->
     <div class="bg-gray-50 text-center py-12">
       <section class="max-w-7xl mx-auto px-4">
-        <h4 class="text-indigo-600 text-lg font-semibold mb-2">Plan de asignatura</h4>
+        <a href="/plan/{{ $subject->plan_id }}">
+            <h4 class="text-indigo-600 text-lg hover:underline font-semibold mb-2">{{ $subject->plan->name }}</h4>
+        </a>
         <h2 class="text-4xl font-bold mb-2">{{ $subject->name }}</h2>
       </section>
     </div>
@@ -60,20 +64,20 @@
                       <li class="text-indigo-600 font-semibold">Docentes de la asignatura: {{ $subject->users->pluck('name')->join(', ') }}.</li>
                     </ul>
                     <div x-data="{ tab: 'interest_centers' }">
-                        <div class="flex border-b border-gray-200 mb-6">
+                        <div class="flex flex-wrap border-b border-gray-200 mb-6 gap-2 w-full">
                             <button @click="tab = 'interest_centers'"
                                 :class="tab === 'interest_centers' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
-                                class="px-4 py-2 focus:outline-none">
+                                class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Centros de interés
                             </button>
                             <button @click="tab = 'topics'"
                                 :class="tab === 'topics' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
-                                class="px-4 py-2 focus:outline-none">
+                                class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Contenidos
                             </button>
                             <button @click="tab = 'rubrics'"
                                 :class="tab === 'rubrics' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
-                                class="px-4 py-2 focus:outline-none">
+                                class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Rúbricas
                             </button>
                         </div>
@@ -107,11 +111,11 @@
                                             <tbody>
                                                 @foreach ($subject->topics as $topic)
                                                     <tr class="hover:bg-gray-50">
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{{ $topic->period }}</td>
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{!! $topic->standard !!}</td>
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{!! $topic->dba !!}</td>
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{!! $topic->competencies !!}</td>
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{!! $topic->contents !!}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{{ $topic->period }}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $topic->standard !!}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $topic->dba !!}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $topic->competencies !!}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $topic->contents !!}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -131,21 +135,21 @@
                                                 <tr>
                                                     <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Periodo</th>
                                                     <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Criterio</th>
-                                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Nivel Superior</th>
-                                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Nivel Alto</th>
-                                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Nivel Básico</th>
-                                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Nivel Bajo</th>
+                                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Superior</th>
+                                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Alto</th>
+                                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Básico</th>
+                                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Bajo</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach ($subject->rubrics as $rubric)
                                                     <tr class="hover:bg-gray-50">
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{{ $rubric->period }}</td>
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{!! $rubric->criterion !!}</td>
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{!! $rubric->superior_level !!}</td>
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{!! $rubric->high_level !!}</td>
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{!! $rubric->basic_level !!}</td>
-                                                        <td class="px-4 py-2 border-b text-sm text-gray-700">{!! $rubric->low_level !!}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{{ $rubric->period }}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $rubric->criterion !!}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $rubric->superior_level !!}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $rubric->high_level !!}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $rubric->basic_level !!}</td>
+                                                        <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $rubric->low_level !!}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
