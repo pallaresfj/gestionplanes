@@ -31,12 +31,19 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->profile(isSimple: false)
             ->sidebarCollapsibleOnDesktop()
-            ->colors([
+            /* ->colors([
                 'danger' => Color::Red,
                 'info' => Color::Sky,
                 'primary' => Color::Emerald,
                 'success' => Color::Teal,
                 'warning' => Color::Orange,
+            ]) */
+            ->colors([
+                'primary' => '#1d6362',
+                'success' => '#6b9a34',
+                'info' => '#99ce93',
+                'warning' => '#f8c508',
+                'danger' => '#f50404',
             ])
             ->font('Poppins')
             ->favicon(asset('images/favicon.png'))
