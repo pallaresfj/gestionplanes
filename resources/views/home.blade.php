@@ -72,22 +72,22 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach ($planes as $plan)
             <article class="bg-white shadow-md rounded-lg overflow-hidden">
-                <a href="/{{ $plan->id }}" class="hover:opacity-75">
+                <a href="/plan/{{ $plan->id }}" class="hover:opacity-75">
                     <img src="/storage/{{ $plan->cover }}" alt="" class="w-full h-48 object-cover">
                 </a> 
                 <div class="p-6">
                     <span class="text-indigo-600 text-sm font-semibold">{{ $plan->year }}</span>
-                    <a href="/{{ $plan->id }}" class="block mt-2 mb-3 hover:text-indigo-500 transition">
+                    <a href="/plan/{{ $plan->id }}" class="block mt-2 mb-3 hover:text-indigo-500 transition">
                         <h4 class="text-xl font-semibold">{{ $plan->name }}</h4>
                     </a>
                     <ul class="flex space-x-4 text-sm text-gray-500 mb-4">
-                        <li><a href="#" class="hover:text-indigo-500 transition">Docentes del área: {{ $plan->users->pluck('name')->join(', ') }}.</a></li>
+                        <li class="text-indigo-500 transition">Docentes del área: {{ $plan->users->pluck('name')->join(', ') }}.</li>
                     </ul>
                     <p class="text-gray-600 mb-4">{!! \Illuminate\Support\Str::limit($plan->justification, 150, '...') !!}</p>
                     <div>
                         <ul class="flex items-center space-x-2 text-indigo-600 text-sm font-semibold">
                             <li><i class="fa fa-tags"></i></li>
-                            <li><a href="/{{ $plan->id }}" class="hover:underline">Ver Plan de área</a></li>
+                            <li><a href="/plan/{{ $plan->id }}" class="hover:underline">Ver Plan de área</a></li>
                         </ul>
                     </div>
                 </div>

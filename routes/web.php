@@ -7,4 +7,5 @@ use App\Http\Controllers\HomeController;
     return view('welcome');
 }); */
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/{id}', [HomeController::class, 'plandetail']);
+Route::get('/plan/{id}', [HomeController::class, 'plandetail'])->name('plan');
+Route::get('/subject/{id}', [HomeController::class, 'subjectdetail'])->name('subject');
