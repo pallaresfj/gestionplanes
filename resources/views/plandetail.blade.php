@@ -71,6 +71,11 @@
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Justificación
                             </button>
+                            <button @click="tab = 'principios'"
+                                :class="tab === 'principios' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                                class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
+                                Principios
+                            </button>
                             <button @click="tab = 'objectives'"
                                 :class="tab === 'objectives' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
@@ -95,6 +100,17 @@
                                     {!! $plan->justification !!}
                                 </div>
                             </div>
+
+                            <div x-show="tab === 'principios'" x-cloak>
+                              <h2 class="text-xl font-semibold mb-4">Misión</h2>
+                              <div class="prose max-w-none">
+                                  {!! $plan->schoolProfile->mission !!}
+                              </div>
+                              <h2 class="text-xl font-semibold my-4">Visión</h2>
+                              <div class="prose max-w-none">
+                                {!! $plan->schoolProfile->vision !!}
+                              </div>
+                          </div>
 
                             <div x-show="tab === 'objectives'" x-cloak>
                                 <h2 class="text-xl font-semibold mb-4">Objetivos</h2>

@@ -149,6 +149,7 @@
                                       <table class="min-w-full bg-white border border-gray-200">
                                           <thead>
                                               <tr>
+                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Fecha</th>
                                                   <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Actividad</th>
                                                   <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Objetivo</th>
                                                   <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Metodología</th>
@@ -158,6 +159,7 @@
                                           <tbody>
                                               @foreach ($center->activities as $activity)
                                                   <tr class="hover:bg-gray-50">
+                                                      <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{{ \Carbon\Carbon::parse($activity->week)->translatedFormat('F d') }}</td>
                                                       <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{{ $activity->activity }}</td>
                                                       <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{{ $activity->objective }}</td>
                                                       <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $activity->methodology !!}</td>

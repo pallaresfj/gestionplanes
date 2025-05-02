@@ -36,7 +36,7 @@
         >
           <li><a href="/" class="hover:text-indigo-500 transition">Inicio</a></li>
           <li><a href="/planes" class="hover:text-indigo-500 transitio">Planes</a></li>
-          <li><a href="#" class="text-indigo-600 font-semiboldn">Centros</a></li>
+          <li><a href="/centers" class="text-indigo-600 font-semibold">Centros</a></li>
           <li><a href="/admin" class="hover:text-indigo-500 transition">Ingresar</a></li>
         </ul>
       </nav>
