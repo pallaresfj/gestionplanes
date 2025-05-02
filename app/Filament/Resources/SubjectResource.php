@@ -146,7 +146,34 @@ class SubjectResource extends Resource
             ->defaultGroup('plan.name')
             ->groupingDirectionSettingHidden()
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('grade')
+                    ->label('Grado')
+                    ->options([
+                        '0' => 'Transición',
+                        '1' => 'Primero',
+                        '2' => 'Segundo',
+                        '3' => 'Tercero',
+                        '4' => 'Cuarto',
+                        '5' => 'Quinto',
+                        '6' => 'Sexto',
+                        '7' => 'Séptimo',
+                        '8' => 'Octavo',
+                        '9' => 'Noveno',
+                        '10' => 'Décimo',
+                        '11' => 'Undécimo',
+                    ])
+                    ->searchable(),
+
+                Tables\Filters\SelectFilter::make('plan_id')
+                    ->label('Área')
+                    ->relationship('plan', 'name')
+                    ->searchable(),
+
+                Tables\Filters\SelectFilter::make('users')
+                    ->label('Docentes')
+                    ->multiple()
+                    ->relationship('users', 'name')
+                    ->searchable(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
