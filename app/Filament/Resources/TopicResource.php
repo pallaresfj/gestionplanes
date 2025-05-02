@@ -160,7 +160,24 @@ class TopicResource extends Resource
             ->defaultGroup('period')
             ->groupingDirectionSettingHidden()
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('period')
+                    ->label('Periodo')
+                    ->options([
+                        '1' => 'Primero',
+                        '2' => 'Segundo',
+                        '3' => 'Tercero',
+                    ])
+                    ->searchable(),
+
+                Tables\Filters\SelectFilter::make('subject_id')
+                    ->label('Asignatura')
+                    ->relationship('subject', 'name')
+                    ->searchable(),
+
+                Tables\Filters\SelectFilter::make('subject.plan_id')
+                    ->label('Área')
+                    ->relationship('subject.plan', 'name')
+                    ->searchable(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
