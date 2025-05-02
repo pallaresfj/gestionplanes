@@ -162,6 +162,7 @@ class RubricResource extends Resource
                     ->relationship('subject.plan', 'name')
                     ->searchable(),
             ])
+            ->persistFiltersInSession()
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->label('')

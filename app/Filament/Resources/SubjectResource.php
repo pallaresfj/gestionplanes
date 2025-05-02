@@ -175,6 +175,7 @@ class SubjectResource extends Resource
                     ->relationship('users', 'name')
                     ->searchable(),
             ])
+            ->persistFiltersInSession()
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->label('')
