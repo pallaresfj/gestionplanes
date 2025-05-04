@@ -39,10 +39,13 @@ class BudgetsRelationManager extends RelationManager
                     ->maxLength(255),
                 Forms\Components\TextInput::make('unit_value')
                     ->label('Valor Unitario')
+                    ->required()
+                    ->numeric()
                     ->default(0.00),
             ]),
             Forms\Components\Textarea::make('observations')
                 ->label('Observaciones')
+                ->placeholder('Dejar en blanco si no hay observaciones')
                 ->columnSpanFull(),
         ]);
     }

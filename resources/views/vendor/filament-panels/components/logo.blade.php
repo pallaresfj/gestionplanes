@@ -1,1 +1,3 @@
-<img src="{{ asset('images/logo.svg') }}" class="h-16">
+<a href="{{ route('home') }}">
+    <img src="{{ asset('images/logo.svg') }}" class="h-16">
+</a>

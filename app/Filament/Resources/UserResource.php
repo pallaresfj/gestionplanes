@@ -89,7 +89,19 @@ class UserResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('roles')
+                    ->label('Roles')
+                    ->multiple()
+                    ->relationship('roles', 'name')
+                    ->searchable(),
+
+                Tables\Filters\Filter::make('email_verified_at')
+                    ->label('Verificado')
+                    ->query(fn (Builder $query): Builder => $query->whereNotNull('email_verified_at')),
+
+                Tables\Filters\Filter::make('not_verified')
+                    ->label('No verificado')
+                    ->query(fn (Builder $query): Builder => $query->whereNull('email_verified_at')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
