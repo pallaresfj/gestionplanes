@@ -82,29 +82,35 @@
                           @endif
                       </li>
                     </ul>
-                    <div x-data="{ tab: 'description' }">
+                    <div x-data="{ 
+                        tab: localStorage.getItem('centerTab') || 'description',
+                        setTab(value) {
+                            this.tab = value;
+                            localStorage.setItem('centerTab', value);
+                        }
+                    }">
                         <div class="flex flex-wrap border-b border-gray-200 mb-6 gap-2 w-full">
-                            <button @click="tab = 'description'"
+                            <button @click="setTab('description')"
                                 :class="tab === 'description' ? 'border-b-2 border-green-500 text-green-500' : 'text-gray-500 hover:text-green-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Descripción
                             </button>
-                            <button @click="tab = 'objective'"
+                            <button @click="setTab('objective')"
                                 :class="tab === 'objective' ? 'border-b-2 border-green-500 text-green-500' : 'text-gray-500 hover:text-green-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Objetivo
                             </button>
-                            <button @click="tab = 'students'"
+                            <button @click="setTab('students')"
                                 :class="tab === 'students' ? 'border-b-2 border-green-500 text-green-500' : 'text-gray-500 hover:text-green-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Estudiantes
                             </button>
-                            <button @click="tab = 'activities'"
+                            <button @click="setTab('activities')"
                                 :class="tab === 'activities' ? 'border-b-2 border-green-500 text-green-500' : 'text-gray-500 hover:text-green-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Actividades
                             </button>
-                            <button @click="tab = 'budgets'"
+                            <button @click="setTab('budgets')"
                                 :class="tab === 'budgets' ? 'border-b-2 border-green-500 text-green-500' : 'text-gray-500 hover:text-green-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Recursos
@@ -139,7 +145,8 @@
                                               </tr>
                                           </thead>
                                           <tbody>
-                                              @foreach ($center->students as $student)
+                                              {{-- @foreach ($center->students as $student) --}}
+                                              @foreach ($students as $student)
                                                   <tr class="hover:bg-gray-50">
                                                       <td class="px-4 py-2 border-b text-sm text-gray-700">{{ $student->grade }}</td>
                                                       <td class="px-4 py-2 border-b text-sm text-gray-700">{{ $student->full_name }}</td>
@@ -148,6 +155,9 @@
                                               @endforeach
                                           </tbody>
                                       </table>
+                                      <div class="mt-4">
+                                        {{ $students->withQueryString()->fragment('students')->links() }}
+                                      </div>
                                   </div>
                               @else
                                   <p class="text-gray-500">No hay estudiantes registrados para este centro de interés.</p>
@@ -169,7 +179,8 @@
                                               </tr>
                                           </thead>
                                           <tbody>
-                                              @foreach ($center->activities as $activity)
+                                              {{-- @foreach ($center->activities as $activity) --}}
+                                              @foreach ($activities as $activity)
                                                   <tr class="hover:bg-gray-50">
                                                       <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{{ \Carbon\Carbon::parse($activity->week)->translatedFormat('F d') }}</td>
                                                       <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{{ $activity->activity }}</td>
@@ -180,6 +191,9 @@
                                               @endforeach
                                           </tbody>
                                       </table>
+                                      <div class="mt-4">
+                                        {{ $activities->withQueryString()->fragment('activities')->links() }}
+                                      </div>
                                   </div>
                               @else
                                   <p class="text-gray-500">No hay actividades registradas para este centro de interés.</p>
@@ -201,7 +215,8 @@
                                               </tr>
                                           </thead>
                                           <tbody>
-                                              @foreach ($center->budgets as $budget)
+                                              {{-- @foreach ($center->budgets as $budget) --}}
+                                              @foreach ($budgets as $budget)
                                                   <tr class="hover:bg-gray-50">
                                                       <td class="px-4 py-2 border-b text-sm text-gray-700 text-right">{{ $budget->quantity }}</td>
                                                       <td class="px-4 py-2 border-b text-sm text-gray-700">{{ $budget->item }}</td>
@@ -216,6 +231,9 @@
                                               @endforeach
                                           </tbody>
                                       </table>
+                                      <div class="mt-4">
+                                        {{ $budgets->withQueryString()->fragment('budgets')->links() }}
+                                      </div>
                                   </div>
                               @else
                                   <p class="text-gray-500">No hay recursos registrados para este centro de interés.</p>

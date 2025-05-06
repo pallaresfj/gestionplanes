@@ -38,10 +38,31 @@ class HomeController extends Controller
 
         return view('centers', ['centers' => $centers]);
     }
-    public function centerdetail($id)
+    /* public function centerdetail($id)
     {
         $center = Center::where('id', $id)->first();
         return view('centerdetail', ['center' => $center]);
+    } */
+    public function centerdetail($id)
+    {
+        // Traer solo el center sin cargar todas las relaciones grandes
+        $center = Center::findOrFail($id);
+    
+        // Paginar las actividades
+        $activities = $center->activities()->paginate(10, ['*'], 'activities_page');
+    
+        // Paginar los estudiantes
+        $students = $center->students()->paginate(10, ['*'], 'students_page');
+    
+        // Paginar los presupuestos
+        $budgets = $center->budgets()->paginate(10, ['*'], 'budgets_page');
+    
+        return view('centerdetail', [
+            'center' => $center,
+            'activities' => $activities,
+            'students' => $students,
+            'budgets' => $budgets,
+        ]);
     }
     public function plandetail($id)
     {
