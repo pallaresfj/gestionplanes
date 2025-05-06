@@ -86,14 +86,25 @@
                         <h4 class="text-xl font-semibold">{{ $center->name }}</h4>
                     </a>
                     <ul class="flex space-x-4 text-sm text-gray-500 mb-4">
-                      <li class="text-green-500 transition">
-                        Docentes del centro:
-                        @if($center->teachers->count())
-                            {{ $center->teachers->pluck('full_name')->join(', ') }}
-                        @else
-                            No hay docentes asignados.
-                        @endif
-                    </li>
+                      <li class="text-green-500 font-semibold mb-2">
+                          Docentes del centro:
+                          @if($center->teachers->count())
+                              <div class="mt-2 space-y-2">
+                                  @foreach ($center->teachers as $teacher)
+                                      <div class="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-1">
+                                          <img src="{{ $teacher->profile_photo_path ? asset('storage/' . $teacher->profile_photo_path) : asset('images/default-avatar.png') }}"
+                                               alt="{{ $teacher->full_name }}"
+                                               class="w-8 h-8 rounded-full object-cover">
+                                          <span class="text-sm font-normal">{{ $teacher->full_name }}</span>
+                                      </div>
+                                  @endforeach
+                              </div>
+                          @else
+                              <div class="mt-2">
+                                  No hay docentes asignados.
+                              </div>
+                          @endif
+                      </li>
                     </ul>
                     <p class="text-gray-600 mb-4">{!! \Illuminate\Support\Str::limit($center->description, 150, '...') !!}</p>
                     <div>
