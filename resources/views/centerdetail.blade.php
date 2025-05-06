@@ -7,6 +7,7 @@
     <title>GESTIÓN ACADÉMICA</title>
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
   </head>
 
   <body class="bg-white text-gray-700">
@@ -133,111 +134,15 @@
                             </div>
 
                             <div x-show="tab === 'students'" x-cloak>
-                              <h2 class="text-xl font-semibold mb-4">Estudiantes</h2>
-                              @if ($center->students->count())
-                                  <div class="overflow-x-auto">
-                                      <table class="min-w-full bg-white border border-gray-200">
-                                          <thead>
-                                              <tr>
-                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Curso</th>
-                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Nombre</th>
-                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Documento</th>
-                                              </tr>
-                                          </thead>
-                                          <tbody>
-                                              {{-- @foreach ($center->students as $student) --}}
-                                              @foreach ($students as $student)
-                                                  <tr class="hover:bg-gray-50">
-                                                      <td class="px-4 py-2 border-b text-sm text-gray-700">{{ $student->grade }}</td>
-                                                      <td class="px-4 py-2 border-b text-sm text-gray-700">{{ $student->full_name }}</td>
-                                                      <td class="px-4 py-2 border-b text-sm text-gray-700">{{ $student->identification }}</td>
-                                                  </tr>
-                                              @endforeach
-                                          </tbody>
-                                      </table>
-                                      <div class="mt-4">
-                                        {{ $students->withQueryString()->fragment('students')->links() }}
-                                      </div>
-                                  </div>
-                              @else
-                                  <p class="text-gray-500">No hay estudiantes registrados para este centro de interés.</p>
-                              @endif
+                                <livewire:center-students :centerId="$center->id" wire:noscroll />
                             </div>
 
                             <div x-show="tab === 'activities'" x-cloak>
-                              <h2 class="text-xl font-semibold mb-4">Actividades</h2>
-                              @if ($center->activities->count())
-                                  <div class="overflow-x-auto">
-                                      <table class="min-w-full bg-white border border-gray-200">
-                                          <thead>
-                                              <tr>
-                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Fecha</th>
-                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Actividad</th>
-                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Objetivo</th>
-                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Metodología</th>
-                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Materiales</th>
-                                              </tr>
-                                          </thead>
-                                          <tbody>
-                                              {{-- @foreach ($center->activities as $activity) --}}
-                                              @foreach ($activities as $activity)
-                                                  <tr class="hover:bg-gray-50">
-                                                      <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{{ \Carbon\Carbon::parse($activity->week)->translatedFormat('F d') }}</td>
-                                                      <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{{ $activity->activity }}</td>
-                                                      <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{{ $activity->objective }}</td>
-                                                      <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $activity->methodology !!}</td>
-                                                      <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $activity->materials !!}</td>
-                                                  </tr>
-                                              @endforeach
-                                          </tbody>
-                                      </table>
-                                      <div class="mt-4">
-                                        {{ $activities->withQueryString()->fragment('activities')->links() }}
-                                      </div>
-                                  </div>
-                              @else
-                                  <p class="text-gray-500">No hay actividades registradas para este centro de interés.</p>
-                              @endif
+                                <livewire:center-activities :centerId="$center->id" wire:noscroll />
                             </div>
 
                             <div x-show="tab === 'budgets'" x-cloak>
-                              <h2 class="text-xl font-semibold mb-4">Recursos</h2>
-                              @if ($center->budgets->count())
-                                  <div class="overflow-x-auto">
-                                      <table class="min-w-full bg-white border border-gray-200">
-                                          <thead>
-                                              <tr>
-                                                  <th class="px-4 py-2 border-b text-right text-sm font-semibold text-gray-700">Cantidad</th>
-                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Item</th>
-                                                  <th class="px-4 py-2 border-b text-right text-sm font-semibold text-gray-700">Valor Unitario</th>
-                                                  <th class="px-4 py-2 border-b text-right text-sm font-semibold text-gray-700">Total</th>
-                                                  <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Observaciones</th>
-                                              </tr>
-                                          </thead>
-                                          <tbody>
-                                              {{-- @foreach ($center->budgets as $budget) --}}
-                                              @foreach ($budgets as $budget)
-                                                  <tr class="hover:bg-gray-50">
-                                                      <td class="px-4 py-2 border-b text-sm text-gray-700 text-right">{{ $budget->quantity }}</td>
-                                                      <td class="px-4 py-2 border-b text-sm text-gray-700">{{ $budget->item }}</td>
-                                                      <td class="px-4 py-2 border-b text-sm text-gray-700 text-right">
-                                                        {{ '$' . number_format($budget->unit_value, 0, ',', '.') }}
-                                                      </td>
-                                                      <td class="px-4 py-2 border-b text-sm text-gray-700 text-right">
-                                                        {{ '$' . number_format($budget->quantity * $budget->unit_value, 0, ',', '.') }}
-                                                      </td>
-                                                      <td class="px-4 py-2 border-b text-sm text-gray-700">{{ $budget->observations }}</td>
-                                                  </tr>
-                                              @endforeach
-                                          </tbody>
-                                      </table>
-                                      <div class="mt-4">
-                                        {{ $budgets->withQueryString()->fragment('budgets')->links() }}
-                                      </div>
-                                  </div>
-                              @else
-                                  <p class="text-gray-500">No hay recursos registrados para este centro de interés.</p>
-                              @endif
+                                <livewire:center-budgets :centerId="$center->id" wire:noscroll />
                             </div>
 
                         </div>
@@ -252,7 +157,9 @@
         <p>Copyright 2025. IED Agropecuaria José María Herrera - Pivijay | Diseño <a rel="nofollow" href="https://asyservicios.com" target="_blank" class="text-green-500 hover:underline">AS&Servicios.com</a></p>
       </div>
     </footer>
-
+    
 </body>
-    <script src="//unpkg.com/alpinejs" defer></script>
+    @livewireScripts
+    {{-- <script src="//unpkg.com/alpinejs" defer></script> --}}
+
 </html>
