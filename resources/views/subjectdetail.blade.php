@@ -35,10 +35,10 @@
           :class="{'block': open, 'hidden': !open, 'md:flex': true}"
           class="flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6 text-gray-700"
         >
-          <li><a href="/" class="hover:text-indigo-500 transition">Inicio</a></li>
-          <li><a href="/planes" class="text-indigo-600 font-semibold">Planes</a></li>
-          <li><a href="#" class="hover:text-indigo-500 transition">Centros</a></li>
-          <li><a href="/admin" class="hover:text-indigo-500 transition">Ingresar</a></li>
+          <li><a href="/" class="hover:text-green-500 transition">Inicio</a></li>
+          <li><a href="/planes" class="text-green-600 font-semibold">Planes</a></li>
+          <li><a href="/centers" class="hover:text-green-500 transition">Centros</a></li>
+          <li><a href="/admin" class="hover:text-green-500 transition">Ingresar</a></li>
         </ul>
       </nav>
     </header>
@@ -47,7 +47,7 @@
     <div class="bg-gray-50 text-center py-12">
       <section class="max-w-7xl mx-auto px-4">
         <a href="/plan/{{ $subject->plan_id }}">
-            <h4 class="text-indigo-600 text-lg hover:underline font-semibold mb-2">{{ $subject->plan->name }}</h4>
+            <h4 class="text-green-600 text-lg hover:underline font-semibold mb-2">{{ $subject->plan->name }}</h4>
         </a>
         <h2 class="text-4xl font-bold mb-2">{{ $subject->name }}</h2>
       </section>
@@ -59,25 +59,37 @@
             <article class="bg-white shadow-md rounded-lg overflow-hidden w-full">
                 <img src="{{ asset('images/portada.jpg') }}" alt="Portada" class="w-full h-48 object-cover">
                 <div class="p-6">
-                    <span class="text-indigo-600 text-sm font-semibold block mt-0">{{ $subject->grade }}° Grado | {{ $subject->weekly_hours }} Horas</span>
+                    <span class="text-green-600 text-sm font-semibold block mt-0">{{ $subject->grade }}° Grado | {{ $subject->weekly_hours }} Horas</span>
                     <h4 class="block mt-2 mb-3 text-xl font-semibold">{{ $subject->name }}</h4>
                     <ul class="flex space-x-4 text-sm text-gray-500 mb-4">
-                      <li class="text-indigo-600 font-semibold">Docentes de la asignatura: {{ $subject->users->pluck('name')->join(', ') }}.</li>
+                        <li class="text-green-600 font-semibold mb-2">
+                            Docentes de la asignatura:
+                            <div class="mt-2 space-y-2">
+                                @foreach ($subject->users as $user)
+                                    <div class="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-1">
+                                        <img src="{{ $user->profile_photo_path ? asset('storage/' . $user->profile_photo_path) : asset('images/default-avatar.png') }}"
+                                             alt="{{ $user->name }}"
+                                             class="w-8 h-8 rounded-full object-cover">
+                                        <span class="text-sm font-normal">{{ $user->name }}</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </li>
                     </ul>
                     <div x-data="{ tab: 'interest_centers' }">
                         <div class="flex flex-wrap border-b border-gray-200 mb-6 gap-2 w-full">
                             <button @click="tab = 'interest_centers'"
-                                :class="tab === 'interest_centers' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                                :class="tab === 'interest_centers' ? 'border-b-2 border-green-500 text-green-500' : 'text-gray-500 hover:text-green-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Centros de interés
                             </button>
                             <button @click="tab = 'topics'"
-                                :class="tab === 'topics' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                                :class="tab === 'topics' ? 'border-b-2 border-green-500 text-green-500' : 'text-gray-500 hover:text-green-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Contenidos
                             </button>
                             <button @click="tab = 'rubrics'"
-                                :class="tab === 'rubrics' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                                :class="tab === 'rubrics' ? 'border-b-2 border-green-500 text-green-500' : 'text-gray-500 hover:text-green-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Rúbricas
                             </button>
@@ -169,7 +181,7 @@
 
     <footer class="bg-gray-900 text-gray-300 py-6">
       <div class="max-w-7xl mx-auto text-center text-sm">
-        <p>Copyright 2025. IED Agropecuaria José María Herrera - Pivijay | Diseño <a rel="nofollow" href="https://asyservicios.com" target="_blank" class="text-indigo-500 hover:underline">AS&Servicios.com</a></p>
+        <p>Copyright 2025. IED Agropecuaria José María Herrera - Pivijay | Diseño <a rel="nofollow" href="https://asyservicios.com" target="_blank" class="text-green-500 hover:underline">AS&Servicios.com</a></p>
       </div>
     </footer>
 

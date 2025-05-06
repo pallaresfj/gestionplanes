@@ -35,10 +35,10 @@
           :class="{'block': open, 'hidden': !open, 'md:flex': true}"
           class="flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6 text-gray-700"
         >
-          <li><a href="/" class="hover:text-indigo-500 transition">Inicio</a></li>
-          <li><a href="/planes" class="text-indigo-600 font-semibold">Planes</a></li>
-          <li><a href="/centers" class="hover:text-indigo-500 transition">Centros</a></li>
-          <li><a href="/admin" class="hover:text-indigo-500 transition">Ingresar</a></li>
+          <li><a href="/" class="hover:text-green-500 transition">Inicio</a></li>
+          <li><a href="/planes" class="text-green-600 font-semibold">Planes</a></li>
+          <li><a href="/centers" class="hover:text-green-500 transition">Centros</a></li>
+          <li><a href="/admin" class="hover:text-green-500 transition">Ingresar</a></li>
         </ul>
       </nav>
     </header>
@@ -47,7 +47,7 @@
     <div class="bg-gray-50 text-center py-12">
       <section class="max-w-7xl mx-auto px-4">
         <a href="/planes">
-          <h4 class="text-indigo-600 text-lg hover:underline font-semibold mb-2">Planes de área</h4>
+          <h4 class="text-green-600 text-lg hover:underline font-semibold mb-2">Planes de área</h4>
         </a>
         
         <h2 class="text-4xl font-bold">{{ $plan->name }}</h2>
@@ -60,35 +60,47 @@
             <article class="bg-white shadow-md rounded-lg overflow-hidden w-full">
                 <img src="/storage/{{ $plan->cover }}" alt="" class="w-full h-48 object-cover">
                 <div class="p-6">
-                    <span class="text-indigo-600 text-sm font-semibold">{{ $plan->year }}</span>
+                    <span class="text-green-600 text-sm font-semibold">{{ $plan->year }}</span>
                     <h4 class="block mt-2 mb-3 transition text-xl font-semibold">{{ $plan->name }}</h4>
                     <ul class="flex space-x-4 text-sm text-gray-500 mb-4">
-                      <li class="text-indigo-500 transition">Docentes del área: {{ $plan->users->pluck('name')->join(', ') }}.</li>
+                      <li class="text-green-500 font-semibold mb-2">
+                        Docentes del área:
+                        <div class="mt-2 space-y-2">
+                            @foreach ($plan->users as $user)
+                                <div class="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-1">
+                                    <img src="{{ $user->profile_photo_path ? asset('storage/' . $user->profile_photo_path) : asset('images/default-avatar.png') }}"
+                                         alt="{{ $user->name }}"
+                                         class="w-8 h-8 rounded-full object-cover">
+                                    <span class="text-sm font-normal">{{ $user->name }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </li>
                     </ul>
                     <div x-data="{ tab: 'justification' }">
                         <div class="flex flex-wrap border-b border-gray-200 mb-6 gap-2 w-full">
                             <button @click="tab = 'justification'"
-                                :class="tab === 'justification' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                                :class="tab === 'justification' ? 'border-b-2 border-green-500 text-green-500' : 'text-gray-500 hover:text-green-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Justificación
                             </button>
                             <button @click="tab = 'principios'"
-                                :class="tab === 'principios' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                                :class="tab === 'principios' ? 'border-b-2 border-green-500 text-green-500' : 'text-gray-500 hover:text-green-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Principios
                             </button>
                             <button @click="tab = 'objectives'"
-                                :class="tab === 'objectives' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                                :class="tab === 'objectives' ? 'border-b-2 border-green-500 text-green-500' : 'text-gray-500 hover:text-green-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Objetivos
                             </button>
                             <button @click="tab = 'methodology'"
-                                :class="tab === 'methodology' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                                :class="tab === 'methodology' ? 'border-b-2 border-green-500 text-green-500' : 'text-gray-500 hover:text-green-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Metodología
                             </button>
                             <button @click="tab = 'subjects'"
-                                :class="tab === 'subjects' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                                :class="tab === 'subjects' ? 'border-b-2 border-green-500 text-green-500' : 'text-gray-500 hover:text-green-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Asignaturas
                             </button>
@@ -133,7 +145,7 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                                         @foreach ($plan->subjects as $subject)
                                             <div class="bg-gray-50 rounded-lg p-4 shadow-sm hover:shadow transition">
-                                                <a href="/subject/{{ $subject->id }}" class="font-medium text-indigo-600 hover:underline">
+                                                <a href="/subject/{{ $subject->id }}" class="font-medium text-green-600 hover:underline">
                                                     {{ $subject->name }}
                                                 </a>
                                                 <p class="text-sm text-gray-500 mb-2">{{ $subject->grade }}° Grado | {{ $subject->weekly_hours }} Horas.</p>
@@ -163,7 +175,7 @@
 
     <footer class="bg-gray-900 text-gray-300 py-6">
       <div class="max-w-7xl mx-auto text-center text-sm">
-        <p>Copyright 2025. IED Agropecuaria José María Herrera - Pivijay | Diseño <a rel="nofollow" href="https://asyservicios.com" target="_blank" class="text-indigo-500 hover:underline">AS&Servicios.com</a></p>
+        <p>Copyright 2025. IED Agropecuaria José María Herrera - Pivijay | Diseño <a rel="nofollow" href="https://asyservicios.com" target="_blank" class="text-green-500 hover:underline">AS&Servicios.com</a></p>
       </div>
     </footer>
 

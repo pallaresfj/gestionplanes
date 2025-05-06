@@ -35,10 +35,10 @@
           :class="{'block': open, 'hidden': !open, 'md:flex': true}"
           class="flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6 text-gray-700"
         >
-          <li><a href="/" class="hover:text-indigo-500 transition">Inicio</a></li>
-          <li><a href="/planes" class="hover:text-indigo-500 transition">Planes</a></li>
-          <li><a href="/centers" class="text-indigo-600 font-semibold">Centros</a></li>
-          <li><a href="/admin" class="hover:text-indigo-500 transition">Ingresar</a></li>
+          <li><a href="/" class="hover:text-green-500 transition">Inicio</a></li>
+          <li><a href="/planes" class="hover:text-green-500 transition">Planes</a></li>
+          <li><a href="/centers" class="text-green-600 font-semibold">Centros</a></li>
+          <li><a href="/admin" class="hover:text-green-500 transition">Ingresar</a></li>
         </ul>
       </nav>
     </header>
@@ -47,7 +47,7 @@
     <div class="bg-gray-50 text-center py-12">
       <section class="max-w-7xl mx-auto px-4">
         <a href="/centers">
-          <h4 class="text-indigo-600 text-lg hover:underline font-semibold mb-2">Centros de interés</h4>
+          <h4 class="text-green-600 text-lg hover:underline font-semibold mb-2">Centros de interés</h4>
         </a>
         <h2 class="text-4xl font-bold">{{ $center->name }}</h2>
       </section>
@@ -59,42 +59,53 @@
             <article class="bg-white shadow-md rounded-lg overflow-hidden w-full">
                 <img src="/storage/{{ $center->image_path }}" alt="" class="w-full h-48 object-cover">
                 <div class="p-6">
-                    <span class="text-indigo-600 text-sm font-semibold">{{ $center->academic_year }}</span>
+                    <span class="text-green-600 text-sm font-semibold">{{ $center->academic_year }}</span>
                     <h4 class="block mt-2 mb-3 transition text-xl font-semibold">{{ $center->name }}</h4>
                     <ul class="flex space-x-4 text-sm text-gray-500 mb-4">
-                      <li class="text-indigo-500 transition">
-                        Docentes del centro:
-                        @if($center->teachers->count())
-                            {{ $center->teachers->pluck('full_name')->join(', ') }}
-                        @else
-                            No hay docentes asignados.
-                        @endif
-                    </li>
+                      <li class="text-green-500 font-semibold mb-2">
+                          Docentes del centro:
+                          @if($center->teachers->count())
+                              <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                  @foreach ($center->teachers as $teacher)
+                                      <div class="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-1">
+                                          <img src="{{ $teacher->profile_photo_path ? asset('storage/' . $teacher->profile_photo_path) : asset('images/default-avatar.png') }}"
+                                               alt="{{ $teacher->full_name }}"
+                                               class="w-8 h-8 rounded-full object-cover">
+                                          <span class="text-sm font-normal">{{ $teacher->full_name }}</span>
+                                      </div>
+                                  @endforeach
+                              </div>
+                          @else
+                              <div class="mt-2">
+                                  No hay docentes asignados.
+                              </div>
+                          @endif
+                      </li>
                     </ul>
                     <div x-data="{ tab: 'description' }">
                         <div class="flex flex-wrap border-b border-gray-200 mb-6 gap-2 w-full">
                             <button @click="tab = 'description'"
-                                :class="tab === 'description' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                                :class="tab === 'description' ? 'border-b-2 border-green-500 text-green-500' : 'text-gray-500 hover:text-green-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Descripción
                             </button>
                             <button @click="tab = 'objective'"
-                                :class="tab === 'objective' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                                :class="tab === 'objective' ? 'border-b-2 border-green-500 text-green-500' : 'text-gray-500 hover:text-green-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Objetivo
                             </button>
                             <button @click="tab = 'students'"
-                                :class="tab === 'students' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                                :class="tab === 'students' ? 'border-b-2 border-green-500 text-green-500' : 'text-gray-500 hover:text-green-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Estudiantes
                             </button>
                             <button @click="tab = 'activities'"
-                                :class="tab === 'activities' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                                :class="tab === 'activities' ? 'border-b-2 border-green-500 text-green-500' : 'text-gray-500 hover:text-green-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Actividades
                             </button>
                             <button @click="tab = 'budgets'"
-                                :class="tab === 'budgets' ? 'border-b-2 border-indigo-500 text-indigo-500' : 'text-gray-500 hover:text-indigo-500'"
+                                :class="tab === 'budgets' ? 'border-b-2 border-green-500 text-green-500' : 'text-gray-500 hover:text-green-500'"
                                 class="flex-1 px-4 py-2 focus:outline-none min-w-[120px] text-center">
                                 Recursos
                             </button>
@@ -220,7 +231,7 @@
 
     <footer class="bg-gray-900 text-gray-300 py-6">
       <div class="max-w-7xl mx-auto text-center text-sm">
-        <p>Copyright 2025. IED Agropecuaria José María Herrera - Pivijay | Diseño <a rel="nofollow" href="https://asyservicios.com" target="_blank" class="text-indigo-500 hover:underline">AS&Servicios.com</a></p>
+        <p>Copyright 2025. IED Agropecuaria José María Herrera - Pivijay | Diseño <a rel="nofollow" href="https://asyservicios.com" target="_blank" class="text-green-500 hover:underline">AS&Servicios.com</a></p>
       </div>
     </footer>
 
