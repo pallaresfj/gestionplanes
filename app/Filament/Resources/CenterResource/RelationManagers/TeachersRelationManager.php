@@ -23,11 +23,19 @@ class TeachersRelationManager extends RelationManager
     {
         return $form
         ->schema([
-            Forms\Components\TextInput::make('full_name')
-                ->label('Nombre Completo')
-                ->required()
-                ->maxLength(150)
-                ->columnSpanFull(),
+            Grid::make(3)->schema([
+                Forms\Components\TextInput::make('full_name')
+                    ->label('Nombre Completo')
+                    ->required()
+                    ->maxLength(150)
+                    ->columnSpan(2),
+                Forms\Components\FileUpload::make('profile_photo_path')
+                    ->label('Foto')
+                    ->image()
+                    ->imageEditor()
+                    ->directory('teachers')
+                    ->columnSpan(1),
+            ]),
             Grid::make(3)->schema([
                 Forms\Components\TextInput::make('identification')
                     ->label('Identificación')
@@ -52,6 +60,13 @@ class TeachersRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('full_name')
             ->columns([
+                Tables\Columns\ImageColumn::make('profile_photo_path')
+                    ->label('Foto')
+                    ->circular()
+                    ->height(48)
+                    ->width(48)
+                    ->defaultImageUrl(asset('images/default-avatar.png'))
+                    ->extraImgAttributes(['class' => 'object-cover border border-gray-300 shadow-sm']),
                 Tables\Columns\TextColumn::make('full_name')
                     ->label('Nombre')
                     ->wrap()

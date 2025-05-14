@@ -69,7 +69,9 @@
                               <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                   @foreach ($center->teachers as $teacher)
                                       <div class="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-1">
-                                          <img src="{{ $teacher->profile_photo_path ? asset('storage/' . $teacher->profile_photo_path) : asset('images/default-avatar.png') }}"
+                                          <img src="{{ $teacher->profile_photo_path 
+                                                    ? asset('storage/' . $teacher->profile_photo_path) 
+                                                    : asset('images/default-avatar.png') }}"
                                                alt="{{ $teacher->full_name }}"
                                                class="w-8 h-8 rounded-full object-cover">
                                           <span class="text-sm font-normal">{{ $teacher->full_name }}</span>

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('identification', 20)->unique();
             $table->string('email', 100)->nullable();
             $table->string('phone', 20)->nullable();
+            $table->string('profile_photo_path')->nullable(); 
             $table->unsignedBigInteger('center_id');
             $table->timestamps();
             $table->foreign('center_id')->references('id')->on('centers')->onDelete('cascade');

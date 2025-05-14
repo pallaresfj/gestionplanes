@@ -12,7 +12,8 @@ class Teacher extends Model
         'full_name',
         'identification',
         'email',
-        'phone'
+        'phone',
+        'profile_photo_path',
     ];
     public function center() : BelongsTo
     {
