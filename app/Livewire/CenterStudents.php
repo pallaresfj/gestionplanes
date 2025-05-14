@@ -23,6 +23,8 @@ class CenterStudents extends Component
     {
         $students = Center::findOrFail($this->centerId)
             ->students()
+            ->orderBy('grade')
+            ->orderBy('full_name')
             ->simplePaginate(10);
 
         return view('livewire.center-students', compact('students'));

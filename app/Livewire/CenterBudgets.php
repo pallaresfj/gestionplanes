@@ -23,7 +23,7 @@ class CenterBudgets extends Component
     {
         $center = Center::findOrFail($this->centerId);
 
-        $budgets = $center->budgets()->simplePaginate(10);
+        $budgets = $center->budgets()->orderBy('item')->simplePaginate(10);
 
         $totalBudgets = $center->budgets()
             ->get()
