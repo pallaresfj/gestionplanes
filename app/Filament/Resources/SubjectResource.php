@@ -40,6 +40,9 @@ class SubjectResource extends Resource
                         User::ROLE_DIRECTIVO,
                     ]))
                     ->required()
+                    ->native(false)
+                    ->searchable()
+                    ->placeholder('Seleccione un grado')
                     ->options([
                         '0' => 'Transición',
                         '1' => 'Primero',
@@ -61,7 +64,11 @@ class SubjectResource extends Resource
                         User::ROLE_SOPORTE,
                         User::ROLE_DIRECTIVO,
                     ]))
-                    ->required(),
+                    ->required()
+                    ->searchable()
+                    ->placeholder('Seleccione un área')
+                    ->preload()
+                    ->native(false),
                 Forms\Components\TextInput::make('name')
                     ->label('Asignatura')
                     ->required()
@@ -77,6 +84,7 @@ class SubjectResource extends Resource
                     ->relationship('users', 'name')
                 ->options(function () {
                         return User::whereHas('roles', fn ($q) => $q->whereIn('id', [User::ROLE_DOCENTE]))
+                            ->orderBy('name')
                             ->pluck('name', 'id');
                 })
                     ->disabled(fn () => !Auth::user()->hasAnyRoleId([
@@ -85,12 +93,14 @@ class SubjectResource extends Resource
                     ]))
                     ->multiple()
                     ->preload()
-                    ->searchable(),
+                    ->searchable()
+                    ->placeholder('Seleccione docentes')
+                    ->native(false),
 
                 Forms\Components\Select::make('interest_centers')
                     ->label('Centros de Interés')
                     ->multiple()
-                    ->options(Center::all()->pluck('name', 'name'))
+                    ->options(Center::orderBy('name')->pluck('name', 'name'))
                     ->searchable()
                     ->preload(),
 
