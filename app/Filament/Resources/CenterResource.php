@@ -53,6 +53,7 @@ class CenterResource extends Resource
                                             User::whereHas('roles', fn ($q) => $q->whereIn('id', [
                                                 User::ROLE_CENTRO,
                                             ]))
+                                            ->orderBy('name')
                                             ->pluck('name', 'id')
                                         )
                                         ->searchable()
@@ -102,11 +103,14 @@ class CenterResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Centro de Interés')    
-                    ->searchable(),
+                    ->searchable()
+                    ->wrap()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Equipo Responsable')    
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->wrap(),
                 Tables\Columns\ImageColumn::make('image_path')
                     ->label('Portada')
                     ->defaultImageUrl(url('/images/portada.jpg'))
@@ -114,6 +118,7 @@ class CenterResource extends Resource
                     ->width(100)
                     ->height(59),
             ])
+            ->defaultSort('name', 'asc')
             ->filters([
                 //
             ])

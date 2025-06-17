@@ -25,6 +25,8 @@ class TopicsRelationManager extends RelationManager
             ->schema([
                 Forms\Components\Select::make('period')
                     ->label('Periodo')
+                    ->native(false)
+                    ->placeholder('Seleccione un periodo')
                     ->options([
                         '1' => 'Primero',
                         '2' => 'Segundo',

@@ -137,13 +137,15 @@ class SubjectResource extends Resource
                 Tables\Columns\TextColumn::make('weekly_hours')
                     ->label('IHS')
                     ->numeric()
-                    ->sortable(),
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('users.name')
                     ->label('Docentes')
                     ->listWithLineBreaks()
                     ->limitList(3)
+                    ->wrap()
                     ->bulleted(),
             ])
+            ->defaultSort('grade', 'asc')
             ->groups([
                 Group::make('grade')
                 ->label('Grado')

@@ -26,34 +26,41 @@ class SubjectsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('grade')
-                    ->label('Grado')
-                    ->required()
-                    ->options([
-                        '0' => 'Transición',
-                        '1' => 'Primero',
-                        '2' => 'Segundo',
-                        '3' => 'Tercero',
-                        '4' => 'Cuarto',
-                        '5' => 'Quinto',
-                        '6' => 'Sexto',
-                        '7' => 'Séptimo',
-                        '8' => 'Octavo',
-                        '9' => 'Noveno',
-                        '10' => 'Décimo',
-                        '11' => 'Undécimo',
-                    ])
-                    ->visible(fn () => !Auth::user()->hasRole('Centro')),
-                Forms\Components\TextInput::make('name')
-                    ->label('Asignatura')
-                    ->required()
-                    ->maxLength(100),
-                Forms\Components\TextInput::make('weekly_hours')
-                    ->label('Horas semanales')
-                    ->required()
-                    ->numeric()
-                    ->minValue(1)
-                    ->default(1),
+                Forms\Components\Grid::make(12)->schema([
+                    Forms\Components\Select::make('grade')
+                        ->label('Grado')
+                        ->native(false)
+                        ->placeholder('Seleccione un grado')
+                        ->required()
+                        ->options([
+                            '0' => 'Transición',
+                            '1' => 'Primero',
+                            '2' => 'Segundo',
+                            '3' => 'Tercero',
+                            '4' => 'Cuarto',
+                            '5' => 'Quinto',
+                            '6' => 'Sexto',
+                            '7' => 'Séptimo',
+                            '8' => 'Octavo',
+                            '9' => 'Noveno',
+                            '10' => 'Décimo',
+                            '11' => 'Undécimo',
+                        ])
+                        ->visible(fn () => !Auth::user()->hasRole('Centro'))
+                        ->columnSpan(4),
+                    Forms\Components\TextInput::make('name')
+                        ->label('Asignatura')
+                        ->required()
+                        ->maxLength(100)
+                        ->columnSpan(6),
+                    Forms\Components\TextInput::make('weekly_hours')
+                        ->label('IHS')
+                        ->required()
+                        ->numeric()
+                        ->minValue(1)
+                        ->default(1)
+                        ->columnSpan(2),
+                ]),
             ]);
     }
 
@@ -93,13 +100,14 @@ class SubjectsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('weekly_hours')
                     ->label('IHS')
                     ->numeric()
-                    ->sortable(),
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('users.name')
                     ->label('Docentes')
                     ->listWithLineBreaks()
                     ->limitList(3)
                     ->bulleted(),
             ])
+            ->defaultSort('grade', 'asc')
             ->filters([
                 //
             ])

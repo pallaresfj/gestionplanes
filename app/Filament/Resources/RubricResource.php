@@ -37,6 +37,8 @@ class RubricResource extends Resource
             ->schema([
                 Forms\Components\Select::make('period')
                     ->label('Periodo')
+                    ->native(false)
+                    ->placeholder('Seleccione un periodo')
                     ->options([
                         '1' => 'Primero',
                         '2' => 'Segundo',
@@ -45,6 +47,8 @@ class RubricResource extends Resource
                     ->required(),
                 Select::make('subject_id')
                     ->label('Asignatura')
+                    ->native(false)
+                    ->placeholder('Seleccione una asignatura')
                     ->options(function () {
                         $user = Auth::user();
 
@@ -52,7 +56,7 @@ class RubricResource extends Resource
                             User::ROLE_DIRECTIVO,
                             User::ROLE_SOPORTE,
                         ])) {
-                            return Subject::pluck('name', 'id');
+                            return Subject::orderBy('name')->pluck('name', 'id');
                         }
 
                         if ($user->hasAnyRoleId([
@@ -60,14 +64,14 @@ class RubricResource extends Resource
                         ])) 
                         {
                             $planIds = $user->plans()->pluck('plans.id');
-                            return Subject::whereIn('plan_id', $planIds)->pluck('name', 'id');
+                            return Subject::whereIn('plan_id', $planIds)->orderBy('name')->pluck('name', 'id');
                         }
 
                         if ($user->hasAnyRoleId([
                             User::ROLE_DOCENTE
                         ])) 
                         {
-                            return $user->subjects()->select('subjects.name', 'subjects.id')->pluck('subjects.name', 'subjects.id');
+                            return $user->subjects()->select('subjects.name', 'subjects.id')->orderBy('subjects.name')->pluck('subjects.name', 'subjects.id');
                         }
 
                         return [];

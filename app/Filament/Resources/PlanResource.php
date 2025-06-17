@@ -97,7 +97,7 @@ class PlanResource extends Resource
                                             User::ROLE_AREA,
                                             User::ROLE_DOCENTE,
                                         ])
-                                    )->pluck('name', 'id');
+                                    )->orderBy('name')->pluck('name', 'id');
                                 }
 
                                 if ($user->hasAnyRoleId([User::ROLE_AREA])) {
@@ -113,6 +113,8 @@ class PlanResource extends Resource
                             ->multiple()
                             ->searchable()
                             ->preload()
+                            ->native(false)
+                            ->placeholder('Seleccione docentes')
                             ->columnSpanFull(),
                     ]),
 
@@ -176,12 +178,15 @@ class PlanResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Plan de área')    
-                    ->searchable(),
+                    ->searchable()
+                    ->wrap()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('users.name')
                     ->label('Docentes del área')
                     ->searchable()
                     ->listWithLineBreaks()
                     ->bulleted()
+                    ->wrap()
                     ->limitList(3),
                 Tables\Columns\ImageColumn::make('cover')
                     ->label('Portada')
@@ -190,6 +195,7 @@ class PlanResource extends Resource
                     ->width(100)
                     ->height(59),
             ])
+            ->defaultSort('name', 'asc')
             ->filters([
                 //
             ])
