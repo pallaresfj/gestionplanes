@@ -3,7 +3,14 @@
 
     @if ($activities->count())
         <div class="overflow-x-auto">
-            <table class="min-w-full bg-white border border-gray-200">
+            <table class="min-w-full table-fixed bg-white border border-gray-200">
+                <colgroup>
+                    <col style="width: 15%">
+                    <col style="width: 15%">
+                    <col style="width: 30%">
+                    <col style="width: 15%">
+                    <col style="width: 25%">
+                </colgroup>
                 <thead>
                     <tr>
                         <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Fecha</th>
@@ -20,9 +27,9 @@
                                 {{ \Carbon\Carbon::parse($activity->week)->translatedFormat('F d') }}
                             </td>
                             <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{{ $activity->activity }}</td>
-                            <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{{ $activity->objective }}</td>
-                            <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $activity->methodology !!}</td>
-                            <td class="px-4 py-2 border-b text-sm text-gray-700 align-top">{!! $activity->materials !!}</td>
+                            <td class="px-4 py-2 border-b text-sm text-gray-700 align-top break-words">{{ $activity->objective }}</td>
+                            <td class="px-4 py-2 border-b text-sm text-gray-700 align-top break-words">{!! $activity->methodology !!}</td>
+                            <td class="px-4 py-2 border-b text-sm text-gray-700 align-top break-words">{!! $activity->materials !!}</td>
                         </tr>
                     @endforeach
                 </tbody>

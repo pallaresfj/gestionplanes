@@ -45,8 +45,10 @@ class HomeController extends Controller
     } */
     public function centerdetail($id)
     {
-        // Traer solo el center sin cargar todas las relaciones grandes
-        $center = Center::findOrFail($id);
+        // Traer el center y ordenar docentes alfabéticamente
+        $center = Center::with([
+            'teachers' => fn ($query) => $query->orderBy('full_name', 'asc'),
+        ])->findOrFail($id);
     
         // Paginar las actividades
         $activities = $center->activities()->paginate(10, ['*'], 'activities_page');
@@ -71,7 +73,10 @@ class HomeController extends Controller
     }
     public function subjectdetail($id)
     {
-        $subject = Subject::where('id', $id)->first();
+        $subject = Subject::with([
+            'topics' => fn ($query) => $query->orderBy('period', 'asc'),
+            'rubrics' => fn ($query) => $query->orderBy('period', 'asc'),
+        ])->findOrFail($id);
         return view('subjectdetail', ['subject' => $subject]);
     }
 }
