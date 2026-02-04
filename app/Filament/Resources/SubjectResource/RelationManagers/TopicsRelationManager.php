@@ -38,7 +38,7 @@ class TopicsRelationManager extends RelationManager
                 Forms\Components\Grid::make(2)
                 ->schema([
                     Forms\Components\RichEditor::make('standard')
-                    ->label('Estándar')
+                    ->label(fn () => ((string) ($this->getOwnerRecord()?->grade) === '0') ? 'Principio' : 'Estándar')
                     ->disableToolbarButtons([
                         'attachFiles',
                         'blockquote',
@@ -86,7 +86,7 @@ class TopicsRelationManager extends RelationManager
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('standard')
-                    ->label('Estándar')
+                    ->label(fn () => ((string) ($this->getOwnerRecord()?->grade) === '0') ? 'Principio' : 'Estándar')
                     ->html()
                     ->wrap()
                     ->lineClamp(2),

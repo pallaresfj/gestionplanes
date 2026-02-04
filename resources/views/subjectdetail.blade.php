@@ -112,10 +112,13 @@
                                 @if ($subject->topics->count())
                                     <div class="overflow-x-auto">
                                         <table class="min-w-full bg-white border border-gray-200">
+                                            @php
+                                                $standardLabel = ((string) $subject->grade === '0') ? 'Principio' : 'Estándar';
+                                            @endphp
                                             <thead>
                                                 <tr>
                                                     <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Periodo</th>
-                                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Estándar</th>
+                                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">{{ $standardLabel }}</th>
                                                     <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">DBA</th>
                                                     <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Competencias</th>
                                                     <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Contenidos</th>

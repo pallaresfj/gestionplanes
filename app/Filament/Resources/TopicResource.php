@@ -13,6 +13,7 @@ use Filament\Tables\Table;
 use Filament\Tables\Grouping\Group;
 
 use Filament\Forms\Components\Select;
+use Filament\Forms\Get;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Subject;
 use App\Models\User;
@@ -80,7 +81,7 @@ class TopicResource extends Resource
                 Forms\Components\Grid::make(2)
                 ->schema([
                     Forms\Components\RichEditor::make('standard')
-                    ->label('Estándar')
+                    ->label(fn (Get $get) => ((string) (Subject::find($get('subject_id'))?->grade) === '0') ? 'Principio' : 'Estándar')
                     ->disableToolbarButtons([
                         'attachFiles',
                         'blockquote',
