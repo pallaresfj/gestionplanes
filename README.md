@@ -64,3 +64,54 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## SSO con auth (OIDC)
+
+Variables requeridas en `.env`:
+
+```dotenv
+SSO_DISCOVERY_URL=http://localhost:8000/.well-known/openid-configuration
+SSO_ISSUER=http://localhost:8000
+SSO_CLIENT_ID=
+SSO_CLIENT_SECRET=
+SSO_REDIRECT_URI=https://gestionplanes.test/sso/callback
+SSO_SCOPES="openid email profile"
+SSO_HTTP_TIMEOUT=10
+```
+
+Validar discovery/JWKS:
+
+```bash
+curl -fsS "http://localhost:8000/.well-known/openid-configuration"
+curl -fsS "http://localhost:8000/oauth/jwks"
+```
+
+Rutas:
+
+- `GET /sso/login`
+- `GET /sso/callback`
+
+Flujo:
+
+1. `/sso/login` crea `state` + `code_verifier` + `nonce` y redirige a `auth`.
+2. `/sso/callback` valida `state`, canjea `code`, valida `id_token` por JWKS y autentica guard local.
+
+Validaciones realizadas en callback:
+
+- `state` y `nonce`
+- `id_token` (`iss`, `aud`, `exp` y firma RS256 con JWKS)
+- `email`, `name`, `sub`
+- `is_active` (si viene desde `auth`)
+
+Provisioning local:
+
+- `User::updateOrCreate(['email' => ...], ['name' => ...])`
+- En usuario nuevo se asigna rol `Docente` si existe en Spatie/Shield.
+
+Troubleshooting rápido:
+
+- `state mismatch`: limpiar sesión/cookies y reintentar.
+- `invalid issuer/audience`: revisar `SSO_ISSUER`, `SSO_CLIENT_ID`.
+- error de JWKS/discovery: verificar `http://localhost:8000/.well-known/openid-configuration`.
+- `missing email`: revisar scopes `openid email profile`.
+- logout no cierra sesión: confirmar login SSO sin `remember` y limpiar cookies del dominio.

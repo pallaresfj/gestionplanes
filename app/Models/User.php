@@ -33,6 +33,7 @@ class User extends Authenticatable
         'email',
         'password',
         'profile_photo_path',
+        'google_avatar_url',
     ];
 
     /**
@@ -57,24 +58,35 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
     public function getFilamentAvatarUrl(): ?string
     {
+        $avatarUrl = trim((string) $this->google_avatar_url);
+
+        if (filter_var($avatarUrl, FILTER_VALIDATE_URL)) {
+            return $avatarUrl;
+        }
+
         return $this->profile_photo_path
             ? asset('storage/' . $this->profile_photo_path)
             : null;
     }
+
     public function centers() : HasMany
     {
         return $this->hasMany(Center::class);
     }
+
     public function plans() : BelongsToMany
     {
         return $this->belongsToMany(Plan::class);
     }
+
     public function subjects(): BelongsToMany
     {
         return $this->belongsToMany(Subject::class);
     }
+
     public function hasAnyRoleId(array $ids): bool
     {
         return $this->roles->whereIn('id', $ids)->isNotEmpty();
