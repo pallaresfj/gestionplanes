@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(\Database\Seeders\RoleSeeder::class);
+        $this->call(\Database\Seeders\PanelAccessSeeder::class);
 
         $user = User::factory()->create([
             'name' => 'Super Administrador',
