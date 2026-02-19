@@ -2,24 +2,38 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Grid;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use App\Filament\Resources\CenterResource\RelationManagers\TeachersRelationManager;
+use App\Filament\Resources\CenterResource\RelationManagers\StudentsRelationManager;
+use App\Filament\Resources\CenterResource\RelationManagers\ActivitiesRelationManager;
+use App\Filament\Resources\CenterResource\RelationManagers\BudgetsRelationManager;
+use App\Filament\Resources\CenterResource\Pages\ListCenters;
+use App\Filament\Resources\CenterResource\Pages\CreateCenter;
+use App\Filament\Resources\CenterResource\Pages\EditCenter;
 use App\Filament\Resources\CenterResource\Pages;
 use App\Filament\Resources\CenterResource\RelationManagers;
 use App\Models\Center;
 use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Forms\Components\RichEditor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Grid;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class CenterResource extends Resource
@@ -27,18 +41,18 @@ class CenterResource extends Resource
     protected static ?string $model = Center::class;
     protected static ?string $modelLabel = 'Centro';
     protected static ?string $pluralLabel = 'Centros';
-    protected static ?string $navigationGroup = 'Centros de interés';
-    protected static ?string $navigationIcon = 'heroicon-o-home-modern';
+    protected static string | \UnitEnum | null $navigationGroup = 'Centros de interés';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-home-modern';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Tabs::make('Plan de Área')
                     ->tabs([
                         Tab::make('Identificación')->schema([
     
-                            Forms\Components\FileUpload::make('image_path')
+                            FileUpload::make('image_path')
                                 ->label('Portada')
                                 ->image()
                                 ->imageEditor()
@@ -47,7 +61,7 @@ class CenterResource extends Resource
                                 ->columnSpanFull(),
     
                                 Grid::make(2)->schema([
-                                    Forms\Components\Select::make('user_id')
+                                    Select::make('user_id')
                                         ->label('Responsable')
                                         ->options(
                                             User::whereHas('roles', fn ($q) => $q->whereIn('id', [
@@ -62,12 +76,12 @@ class CenterResource extends Resource
                                             User::ROLE_DIRECTIVO,
                                         ]))
                                         ->required(),
-                                    Forms\Components\TextInput::make('academic_year')
+                                    TextInput::make('academic_year')
                                         ->label('Año')
                                         ->required()
                                         ->maxLength(4),
                                 ]),
-                                Forms\Components\TextInput::make('name')
+                                TextInput::make('name')
                                     ->label('Nombre')
                                     ->placeholder('Escriba el nombre del centro de ineterés')
                                     ->required()
@@ -85,7 +99,7 @@ class CenterResource extends Resource
                         ]),
     
                         Tab::make('Objetivo')->schema([
-                            Forms\Components\Textarea::make('objective')
+                            Textarea::make('objective')
                                 ->label('')
                                 ->columnSpanFull(),
                         ]),
@@ -98,20 +112,20 @@ class CenterResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('academic_year')
+                TextColumn::make('academic_year')
                     ->label('Año')    
                     ->searchable(),
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label('Centro de Interés')    
                     ->searchable()
                     ->wrap()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user.name')
+                TextColumn::make('user.name')
                     ->label('Equipo Responsable')    
                     ->numeric()
                     ->sortable()
                     ->wrap(),
-                Tables\Columns\ImageColumn::make('image_path')
+                ImageColumn::make('image_path')
                     ->label('Portada')
                     ->defaultImageUrl(url('/images/portada.jpg'))
                     ->disk('public')
@@ -122,25 +136,25 @@ class CenterResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make()
+            ->recordActions([
+                EditAction::make()
                     ->label('')
                     ->icon('heroicon-o-pencil-square')
                     ->color('success')
                     ->tooltip('Editar')
-                    ->iconSize('h-6 w-6'),
-                Tables\Actions\DeleteAction::make()
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
+                DeleteAction::make()
                     ->label('')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
                     ->tooltip('Borrar')
-                    ->iconSize('h-6 w-6'),
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            ->toolbarActions([
+                BulkActionGroup::make([
                     ExportBulkAction::make()
                         ->label('Exportar Excel'),
-                    Tables\Actions\DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -148,19 +162,19 @@ class CenterResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\TeachersRelationManager::class,
-            RelationManagers\StudentsRelationManager::class,
-            RelationManagers\ActivitiesRelationManager::class,
-            RelationManagers\BudgetsRelationManager::class,
+            TeachersRelationManager::class,
+            StudentsRelationManager::class,
+            ActivitiesRelationManager::class,
+            BudgetsRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCenters::route('/'),
-            'create' => Pages\CreateCenter::route('/create'),
-            'edit' => Pages\EditCenter::route('/{record}/edit'),
+            'index' => ListCenters::route('/'),
+            'create' => CreateCenter::route('/create'),
+            'edit' => EditCenter::route('/{record}/edit'),
         ];
     }
     public static function getEloquentQuery(): Builder

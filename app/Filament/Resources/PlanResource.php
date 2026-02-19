@@ -2,12 +2,26 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Grid;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ViewAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use App\Filament\Resources\PlanResource\RelationManagers\SubjectsRelationManager;
+use App\Filament\Resources\PlanResource\Pages\ListPlans;
+use App\Filament\Resources\PlanResource\Pages\CreatePlan;
+use App\Filament\Resources\PlanResource\Pages\EditPlan;
 use App\Filament\Resources\PlanResource\Pages;
 use App\Filament\Resources\PlanResource\RelationManagers;
 use App\Models\Plan;
 use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Placeholder;
@@ -15,13 +29,10 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Grouping\Group;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Grid;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 use Illuminate\Database\Eloquent\Builder;
@@ -32,15 +43,15 @@ class PlanResource extends Resource
 {
     protected static ?string $model = Plan::class;
     protected static ?int $navigationSort = 1;
-    protected static ?string $navigationGroup = 'Planes de área';
+    protected static string | \UnitEnum | null $navigationGroup = 'Planes de área';
     protected static ?string $modelLabel = 'Área';
     protected static ?string $pluralLabel = 'Áreas';
-    protected static ?string $navigationIcon = 'heroicon-o-book-open';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-book-open';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-        ->schema([
+        return $schema
+        ->components([
             Tabs::make('Plan de Área')
                 ->tabs([
                     Tab::make('Identificación')->schema([
@@ -118,7 +129,7 @@ class PlanResource extends Resource
                             ->columnSpanFull(),
                     ]),
 
-                    Tabs\Tab::make('Principios')
+                    Tab::make('Principios')
                         ->schema([
                             Placeholder::make('mission')
                                 ->label('Misión institucional')
@@ -173,22 +184,22 @@ class PlanResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('year')
+                TextColumn::make('year')
                     ->label('Año')    
                     ->searchable(),
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label('Plan de área')    
                     ->searchable()
                     ->wrap()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('users.name')
+                TextColumn::make('users.name')
                     ->label('Docentes del área')
                     ->searchable()
                     ->listWithLineBreaks()
                     ->bulleted()
                     ->wrap()
                     ->limitList(3),
-                Tables\Columns\ImageColumn::make('cover')
+                ImageColumn::make('cover')
                     ->label('Portada')
                     ->defaultImageUrl(url('/images/portada.jpg'))
                     ->disk('public')
@@ -199,32 +210,32 @@ class PlanResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make()
+            ->recordActions([
+                EditAction::make()
                     ->label('')
                     ->icon('heroicon-o-pencil-square')
                     ->color('success')
                     ->tooltip('Editar')
-                    ->iconSize('h-6 w-6'),
-                Tables\Actions\DeleteAction::make()
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
+                DeleteAction::make()
                     ->label('')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
                     ->tooltip('Borrar')
-                    ->iconSize('h-6 w-6'),
-                Tables\Actions\ViewAction::make()
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
+                ViewAction::make()
                     ->label('')
                     ->icon('heroicon-o-eye')
                     ->color('secondary')
                     ->tooltip('Ver')
-                    ->iconSize('h-6 w-6')
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large)
                     ->modalHeading(fn ($record) => 'Plan de área: ' . $record->name),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            ->toolbarActions([
+                BulkActionGroup::make([
                     ExportBulkAction::make()
                         ->label('Exportar Excel'),
-                    Tables\Actions\DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -232,16 +243,16 @@ class PlanResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\SubjectsRelationManager::class,
+            SubjectsRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPlans::route('/'),
-            'create' => Pages\CreatePlan::route('/create'),
-            'edit' => Pages\EditPlan::route('/{record}/edit'),
+            'index' => ListPlans::route('/'),
+            'create' => CreatePlan::route('/create'),
+            'edit' => EditPlan::route('/{record}/edit'),
         ];
     }
     public static function getEloquentQuery(): Builder

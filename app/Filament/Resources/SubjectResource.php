@@ -2,13 +2,28 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ViewAction;
+use Filament\Actions\ReplicateAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use App\Filament\Resources\SubjectResource\RelationManagers\TopicsRelationManager;
+use App\Filament\Resources\SubjectResource\RelationManagers\RubricsRelationManager;
+use App\Filament\Resources\SubjectResource\Pages\ListSubjects;
+use App\Filament\Resources\SubjectResource\Pages\CreateSubject;
+use App\Filament\Resources\SubjectResource\Pages\EditSubject;
 use App\Filament\Resources\SubjectResource\Pages;
 use App\Filament\Resources\SubjectResource\RelationManagers;
 use App\Models\Subject;
 use App\Models\User;
 use App\Models\Center;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Forms\Components\RichEditor;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -23,17 +38,17 @@ class SubjectResource extends Resource
 {
     protected static ?string $model = Subject::class;
     protected static ?int $navigationSort = 2;
-    protected static ?string $navigationGroup = 'Planes de área';
+    protected static string | \UnitEnum | null $navigationGroup = 'Planes de área';
     protected static ?string $modelLabel = 'Asignatura';
     protected static ?string $pluralLabel = 'Asignaturas';
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('grade')
+        return $schema
+            ->components([
+                Select::make('grade')
                     ->label('Grado')
                     ->disabled(fn () => !Auth::user()->hasAnyRoleId([
                         User::ROLE_SOPORTE,
@@ -57,7 +72,7 @@ class SubjectResource extends Resource
                         '10' => 'Décimo',
                         '11' => 'Undécimo',
                     ]),
-                Forms\Components\Select::make('plan_id')
+                Select::make('plan_id')
                     ->label('Área')
                     ->relationship('plan', 'name')
                     ->disabled(fn () => !Auth::user()->hasAnyRoleId([
@@ -69,17 +84,17 @@ class SubjectResource extends Resource
                     ->placeholder('Seleccione un área')
                     ->preload()
                     ->native(false),
-                Forms\Components\TextInput::make('name')
+                TextInput::make('name')
                     ->label('Asignatura')
                     ->required()
                     ->maxLength(100),
-                Forms\Components\TextInput::make('weekly_hours')
+                TextInput::make('weekly_hours')
                     ->label('Horas semanales')
                     ->required()
                     ->numeric()
                     ->minValue(1)
                     ->default(1),
-                Forms\Components\Select::make('users')
+                Select::make('users')
                     ->label('Docentes para esta asignatura')
                     ->relationship('users', 'name')
                 ->options(function () {
@@ -97,7 +112,7 @@ class SubjectResource extends Resource
                     ->placeholder('Seleccione docentes')
                     ->native(false),
 
-                Forms\Components\Select::make('interest_centers')
+                Select::make('interest_centers')
                     ->label('Centros de Interés')
                     ->multiple()
                     ->options(Center::orderBy('name')->pluck('name', 'name'))
@@ -122,23 +137,23 @@ class SubjectResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('grade')
+                TextColumn::make('grade')
                     ->label('Grado')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('plan.name')
+                TextColumn::make('plan.name')
                     ->label('Área')
                     ->wrap()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label('Asignatura')
                     ->wrap()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('weekly_hours')
+                TextColumn::make('weekly_hours')
                     ->label('IHS')
                     ->numeric()
                     ->alignCenter(),
-                Tables\Columns\TextColumn::make('users.name')
+                TextColumn::make('users.name')
                     ->label('Docentes')
                     ->listWithLineBreaks()
                     ->limitList(3)
@@ -158,7 +173,7 @@ class SubjectResource extends Resource
             ->defaultGroup('plan.name')
             ->groupingDirectionSettingHidden()
             ->filters([
-                Tables\Filters\SelectFilter::make('grade')
+                SelectFilter::make('grade')
                     ->label('Grado')
                     ->options([
                         '0' => 'Transición',
@@ -176,56 +191,56 @@ class SubjectResource extends Resource
                     ])
                     ->searchable(),
 
-                Tables\Filters\SelectFilter::make('plan_id')
+                SelectFilter::make('plan_id')
                     ->label('Área')
                     ->relationship('plan', 'name')
                     ->searchable(),
 
-                Tables\Filters\SelectFilter::make('users')
+                SelectFilter::make('users')
                     ->label('Docentes')
                     ->multiple()
                     ->relationship('users', 'name')
                     ->searchable(),
             ])
             ->persistFiltersInSession()
-            ->actions([
-                Tables\Actions\EditAction::make()
+            ->recordActions([
+                EditAction::make()
                     ->label('')
                     ->icon('heroicon-o-pencil-square')
                     ->color('success')
                     ->tooltip('Editar')
-                    ->iconSize('h-6 w-6')
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large)
                     ->disabled(function ($record) {
                         $user = Auth::user();
                         return ! $user->hasAnyRoleId([User::ROLE_DIRECTIVO, User::ROLE_SOPORTE]) &&
                                ! $record->users->contains('id', $user->id);
                     }),
-                Tables\Actions\DeleteAction::make()
+                DeleteAction::make()
                     ->label('')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
                     ->tooltip('Borrar')
-                    ->iconSize('h-6 w-6'),
-                Tables\Actions\ViewAction::make()
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
+                ViewAction::make()
                     ->label('')
                     ->icon('heroicon-o-eye')
                     ->color('secondary')
                     ->tooltip('Ver')
-                    ->iconSize('h-6 w-6')
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large)
                     ->modalHeading(fn ($record) => $record->plan->name . ': ' . $record->name),
-                Tables\Actions\ReplicateAction::make()
+                ReplicateAction::make()
                     ->label('')
                     ->icon('heroicon-o-document-duplicate')
                     ->color('gray')
                     ->tooltip('Duplicar')
-                    ->iconSize('h-6 w-6')
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large)
                     ->visible(fn () => Auth::user()->hasAnyRoleId([User::ROLE_SOPORTE, User::ROLE_DIRECTIVO])),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            ->toolbarActions([
+                BulkActionGroup::make([
                     ExportBulkAction::make()
                         ->label('Exportar Excel'),
-                    Tables\Actions\DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -233,17 +248,17 @@ class SubjectResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\TopicsRelationManager::class,
-            RelationManagers\RubricsRelationManager::class,
+            TopicsRelationManager::class,
+            RubricsRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListSubjects::route('/'),
-            'create' => Pages\CreateSubject::route('/create'),
-            'edit' => Pages\EditSubject::route('/{record}/edit'),
+            'index' => ListSubjects::route('/'),
+            'create' => CreateSubject::route('/create'),
+            'edit' => EditSubject::route('/{record}/edit'),
         ];
     }
     public static function getEloquentQuery(): Builder

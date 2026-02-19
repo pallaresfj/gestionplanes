@@ -2,8 +2,20 @@
 
 namespace App\Filament\Resources\CenterResource\RelationManagers;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Textarea;
+use Filament\Schemas\Components\Grid;
+use Filament\Forms\Components\RichEditor;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ViewAction;
+use Filament\Actions\ReplicateAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -18,22 +30,26 @@ class ActivitiesRelationManager extends RelationManager
     protected static ?string $pluralLabel = 'Actividades';
     protected static ?string $title = 'Actividades';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-        ->schema([
-            Forms\Components\DatePicker::make('week')
+        return $schema
+        ->components([
+            DatePicker::make('week')
                 ->label('Semana')
                 ->required(),
-            Forms\Components\Textarea::make('activity')
+            Textarea::make('activity')
                 ->label('Actividad')
                 ->required(),
-            Forms\Components\Textarea::make('objective')
+            Textarea::make('objective')
                 ->label('Objetivo de la Actividad')
                 ->columnSpanFull(),
-            Forms\Components\Grid::make(2)
+            Grid::make([
+                'default' => 1,
+                'lg' => 2,
+            ])
+                ->columnSpanFull()
                 ->schema([
-                    Forms\Components\RichEditor::make('methodology')
+                    RichEditor::make('methodology')
                         ->label('Metodología')
                         ->disableToolbarButtons([
                             'attachFiles',
@@ -42,7 +58,7 @@ class ActivitiesRelationManager extends RelationManager
                             'codeBlock',
                             'link',
                         ]),
-                    Forms\Components\RichEditor::make('materials')
+                    RichEditor::make('materials')
                         ->label('Materiales')
                         ->disableToolbarButtons([
                             'attachFiles',
@@ -60,24 +76,24 @@ class ActivitiesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('activity')
             ->columns([
-                Tables\Columns\TextColumn::make('week')
+                TextColumn::make('week')
                     ->label('Semana')
                     ->wrap()
                     ->date('F j \d\e Y')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('activity')
+                TextColumn::make('activity')
                     ->label('Actividad')
                     ->wrap(),
-                Tables\Columns\TextColumn::make('objective')
+                TextColumn::make('objective')
                     ->label('Objetivo')
                     ->lineClamp(4)
                     ->wrap(),
-                Tables\Columns\TextColumn::make('methodology')
+                TextColumn::make('methodology')
                     ->label('Metodología')
                     ->html()
                     ->lineClamp(4)
                     ->wrap(),
-                Tables\Columns\TextColumn::make('materials')
+                TextColumn::make('materials')
                     ->label('Materiales')
                     ->html()
                     ->lineClamp(4)
@@ -87,40 +103,40 @@ class ActivitiesRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make()
+            ->recordActions([
+                EditAction::make()
                     ->label('')
                     ->icon('heroicon-o-pencil-square')
                     ->color('success')
                     ->tooltip('Editar')
-                    ->iconSize('h-6 w-6'),
-                Tables\Actions\DeleteAction::make()
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
+                DeleteAction::make()
                     ->label('')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
                     ->tooltip('Borrar')
-                    ->iconSize('h-6 w-6'),
-                Tables\Actions\ViewAction::make()
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
+                ViewAction::make()
                     ->label('')
                     ->icon('heroicon-o-eye')
                     ->color('secondary')
                     ->tooltip('Ver')
-                    ->iconSize('h-6 w-6')
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large)
                     ->modalHeading(fn ($record) => $record->activity . ' (' . $record->week?->translatedFormat('F j \d\e Y') . ')'),
-                Tables\Actions\ReplicateAction::make()
+                ReplicateAction::make()
                     ->label('')
                     ->icon('heroicon-o-document-duplicate')
                     ->color('gray')
                     ->tooltip('Duplicar')
-                    ->iconSize('h-6 w-6'),
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            ->toolbarActions([
+                BulkActionGroup::make([
                     ExportBulkAction::make()
                         ->label('Exportar Excel'),
-                    Tables\Actions\DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

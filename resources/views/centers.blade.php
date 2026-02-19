@@ -78,7 +78,7 @@
         @foreach ($centers as $center)
             <article class="bg-white shadow-md rounded-lg overflow-hidden">
                 <a href="/center/{{ $center->id }}" class="hover:opacity-75">
-                    <img src="/storage/{{ $center->image_path }}" alt="" class="w-full h-48 object-cover">
+                    <img src="{{ $center->image_url }}" alt="" class="w-full h-48 object-cover">
                 </a> 
                 <div class="p-6">
                     <span class="text-green-600 text-sm font-semibold">{{ $center->academic_year }}</span>

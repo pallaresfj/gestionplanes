@@ -2,11 +2,22 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ViewAction;
+use Filament\Actions\ReplicateAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use App\Filament\Resources\RubricResource\Pages\ListRubrics;
+use App\Filament\Resources\RubricResource\Pages\CreateRubric;
+use App\Filament\Resources\RubricResource\Pages\EditRubric;
 use App\Filament\Resources\RubricResource\Pages;
 use App\Filament\Resources\RubricResource\RelationManagers;
 use App\Models\Rubric;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -25,17 +36,17 @@ class RubricResource extends Resource
 {
     protected static ?string $model = Rubric::class;
     protected static ?int $navigationSort = 4;
-    protected static ?string $navigationGroup = 'Planes de área';
+    protected static string | \UnitEnum | null $navigationGroup = 'Planes de área';
     protected static ?string $modelLabel = 'Rúbrica';
     protected static ?string $pluralLabel = 'Rúbricas';
 
-    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-list-bullet';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('period')
+        return $schema
+            ->components([
+                Select::make('period')
                     ->label('Periodo')
                     ->native(false)
                     ->placeholder('Seleccione un periodo')
@@ -79,23 +90,23 @@ class RubricResource extends Resource
                     ->searchable()
                     ->preload()
                     ->required(),
-                Forms\Components\Textarea::make('criterion')
+                Textarea::make('criterion')
                     ->label('Criterio')
                     ->rows(2)
                     ->columnSpanFull(),
-                Forms\Components\Textarea::make('superior_level')
+                Textarea::make('superior_level')
                     ->label('Superior')
                     ->rows(3)
                     ->maxLength(255),
-                Forms\Components\Textarea::make('high_level')
+                Textarea::make('high_level')
                     ->label('Alto')
                     ->rows(3)
                     ->maxLength(255),
-                Forms\Components\Textarea::make('basic_level')
+                Textarea::make('basic_level')
                     ->label('Básico')
                     ->rows(3)
                     ->maxLength(255),
-                Forms\Components\Textarea::make('low_level')
+                Textarea::make('low_level')
                     ->label('Bajo')
                     ->rows(3)
                     ->maxLength(255),
@@ -106,31 +117,31 @@ class RubricResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('period')
+                TextColumn::make('period')
                     ->label('Periodo')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('subject.name')
+                TextColumn::make('subject.name')
                     ->label('Asignatura')
                     ->wrap()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('criterion')
+                TextColumn::make('criterion')
                     ->label('Criterio')
                     ->wrap()
                     ->lineClamp(2),
-                Tables\Columns\TextColumn::make('superior_level')
+                TextColumn::make('superior_level')
                     ->label('Superior')
                     ->wrap()
                     ->lineClamp(2),
-                Tables\Columns\TextColumn::make('high_level')
+                TextColumn::make('high_level')
                     ->label('Alto')
                     ->wrap()
                     ->lineClamp(2),
-                Tables\Columns\TextColumn::make('basic_level')
+                TextColumn::make('basic_level')
                     ->label('Básico')
                     ->wrap()
                     ->lineClamp(2),
-                Tables\Columns\TextColumn::make('low_level')
+                TextColumn::make('low_level')
                     ->label('Bajo')
                     ->wrap()
                     ->lineClamp(2),
@@ -147,7 +158,7 @@ class RubricResource extends Resource
             ->defaultGroup('period')
             ->groupingDirectionSettingHidden()
             ->filters([
-                Tables\Filters\SelectFilter::make('period')
+                SelectFilter::make('period')
                     ->label('Periodo')
                     ->options([
                         '1' => 'Primero',
@@ -156,49 +167,49 @@ class RubricResource extends Resource
                     ])
                     ->searchable(),
 
-                Tables\Filters\SelectFilter::make('subject_id')
+                SelectFilter::make('subject_id')
                     ->label('Asignatura')
                     ->relationship('subject', 'name')
                     ->searchable(),
 
-                Tables\Filters\SelectFilter::make('subject.plan_id')
+                SelectFilter::make('subject.plan_id')
                     ->label('Área')
                     ->relationship('subject.plan', 'name')
                     ->searchable(),
             ])
             ->persistFiltersInSession()
-            ->actions([
-                Tables\Actions\EditAction::make()
+            ->recordActions([
+                EditAction::make()
                     ->label('')
                     ->icon('heroicon-o-pencil-square')
                     ->color('success')
                     ->tooltip('Editar')
-                    ->iconSize('h-6 w-6'),
-                Tables\Actions\DeleteAction::make()
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
+                DeleteAction::make()
                     ->label('')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
                     ->tooltip('Borrar')
-                    ->iconSize('h-6 w-6'),
-                Tables\Actions\ViewAction::make()
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
+                ViewAction::make()
                     ->label('')
                     ->icon('heroicon-o-eye')
                     ->color('secondary')
                     ->tooltip('Ver')
-                    ->iconSize('h-6 w-6')
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large)
                     ->modalHeading(fn ($record) => 'Periodo ' . $record->period . ': ' . $record->subject->name),
-                Tables\Actions\ReplicateAction::make()
+                ReplicateAction::make()
                     ->label('')
                     ->icon('heroicon-o-document-duplicate')
                     ->color('gray')
                     ->tooltip('Duplicar')
-                    ->iconSize('h-6 w-6'),
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            ->toolbarActions([
+                BulkActionGroup::make([
                     ExportBulkAction::make()
                         ->label('Exportar Excel'),
-                    Tables\Actions\DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -213,9 +224,9 @@ class RubricResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListRubrics::route('/'),
-            'create' => Pages\CreateRubric::route('/create'),
-            'edit' => Pages\EditRubric::route('/{record}/edit'),
+            'index' => ListRubrics::route('/'),
+            'create' => CreateRubric::route('/create'),
+            'edit' => EditRubric::route('/{record}/edit'),
         ];
     }
     

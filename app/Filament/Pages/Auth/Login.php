@@ -2,19 +2,19 @@
 
 namespace App\Filament\Pages\Auth;
 
-use Filament\Forms\Form;
-use Filament\Pages\Auth\Login as BaseLogin;
+use Filament\Support\Enums\Width;
+use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
 
-class Login extends BaseLogin
+class Login extends \Filament\Auth\Pages\Login
 {
-    protected static string $view = 'filament.auth.login';
+    protected string $view = 'filament.auth.login';
 
-    protected ?string $maxWidth = '7xl';
+    protected Width|string|null $maxWidth = '7xl';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form->schema([]);
+        return $schema->components([]);
     }
 
     public function hasLogo(): bool

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Center extends Model
 {
@@ -35,5 +36,20 @@ class Center extends Model
     public function budgets() : HasMany
     {
         return $this->hasMany(Budget::class);
+    }
+
+    public function getImageUrlAttribute(): string
+    {
+        $imagePath = trim((string) $this->image_path);
+
+        if ($imagePath === '') {
+            return asset('images/centros.jpg');
+        }
+
+        if (Storage::disk('public')->exists($imagePath)) {
+            return asset('storage/'.$imagePath);
+        }
+
+        return asset('images/centros.jpg');
     }
 }

@@ -2,8 +2,16 @@
 
 namespace App\Filament\Resources\CenterResource\RelationManagers;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -19,21 +27,21 @@ class StudentsRelationManager extends RelationManager
     protected static ?string $pluralLabel = 'Estudiantes';
     protected static ?string $title = 'Estudiantes';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-        ->schema([
-            Forms\Components\TextInput::make('full_name')
+        return $schema
+        ->components([
+            TextInput::make('full_name')
                 ->label('Nombre Completo')
                 ->required()
                 ->maxLength(150)
                 ->columnSpanFull(),
-            Forms\Components\TextInput::make('identification')
+            TextInput::make('identification')
                 ->label('Identificación')
                 ->required()
                 ->unique(ignorable: fn ($record) => $record)
                 ->maxLength(20),
-            Forms\Components\Select::make('grade')
+            Select::make('grade')
                 ->label('Curso')
                 ->searchable()
                 ->required()
@@ -77,13 +85,13 @@ class StudentsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('full_name')
             ->columns([
-                Tables\Columns\TextColumn::make('full_name')
+                TextColumn::make('full_name')
                     ->label('Nombre Completo')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('identification')
+                TextColumn::make('identification')
                     ->label('Identificación')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('grade')
+                TextColumn::make('grade')
                     ->label('Curso')
                     ->searchable(),
             ])
@@ -99,27 +107,27 @@ class StudentsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make()
+            ->recordActions([
+                EditAction::make()
                     ->label('')
                     ->icon('heroicon-o-pencil-square')
                     ->color('warning')
                     ->tooltip('Editar')
-                    ->iconSize('h-6 w-6'),
-                Tables\Actions\DeleteAction::make()
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
+                DeleteAction::make()
                     ->label('')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
                     ->tooltip('Borrar')
-                    ->iconSize('h-6 w-6'),
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            ->toolbarActions([
+                BulkActionGroup::make([
                     ExportBulkAction::make()
                         ->label('Exportar Excel'),
-                    Tables\Actions\DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

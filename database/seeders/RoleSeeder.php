@@ -5,16 +5,21 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\PermissionRegistrar;
 
 class RoleSeeder extends Seeder
 {
     public function run(): void
     {
-        // Eliminar registros sin romper claves foráneas
-        DB::table('roles')->delete();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        // Reiniciar IDs manualmente (opcional)
-        DB::statement('ALTER TABLE roles AUTO_INCREMENT = 1');
+        // Eliminar registros sin romper claves foráneas
+        Role::query()->where('guard_name', 'web')->delete();
+
+        // Reiniciar IDs solo en motores compatibles con AUTO_INCREMENT.
+        if (in_array(DB::getDriverName(), ['mysql', 'mariadb'], true)) {
+            DB::statement('ALTER TABLE roles AUTO_INCREMENT = 1');
+        }
 
         // Inserta roles con IDs definidos
         Role::create([
@@ -52,6 +57,8 @@ class RoleSeeder extends Seeder
             'name' => 'Docente',
             'guard_name' => 'web',
         ]);
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         // Si usas Shield con tenancy, puedes añadir team_id si aplica
     }

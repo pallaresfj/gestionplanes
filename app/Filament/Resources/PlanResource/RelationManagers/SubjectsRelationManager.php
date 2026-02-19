@@ -2,8 +2,19 @@
 
 namespace App\Filament\Resources\PlanResource\RelationManagers;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\CreateAction;
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ViewAction;
+use Filament\Actions\ReplicateAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -11,7 +22,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 
 use App\Filament\Resources\SubjectResource;
-use Filament\Tables\Actions\Action;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Models\User;
 
@@ -22,12 +32,17 @@ class SubjectsRelationManager extends RelationManager
     protected static ?string $pluralLabel = 'Asignaturas';
     protected static ?string $title = 'Asignaturas';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Grid::make(12)->schema([
-                    Forms\Components\Select::make('grade')
+        return $schema
+            ->components([
+                Grid::make([
+                    'default' => 1,
+                    'lg' => 12,
+                ])
+                    ->columnSpanFull()
+                    ->schema([
+                    Select::make('grade')
                         ->label('Grado')
                         ->native(false)
                         ->placeholder('Seleccione un grado')
@@ -47,19 +62,26 @@ class SubjectsRelationManager extends RelationManager
                             '11' => 'Undécimo',
                         ])
                         ->visible(fn () => !Auth::user()->hasRole('Centro'))
-                        ->columnSpan(4),
-                    Forms\Components\TextInput::make('name')
+                        ->columnSpan([
+                            'default' => 1,
+                            'lg' => 3,
+                        ]),
+                    TextInput::make('name')
                         ->label('Asignatura')
                         ->required()
                         ->maxLength(100)
-                        ->columnSpan(6),
-                    Forms\Components\TextInput::make('weekly_hours')
+                        ->columnSpan(fn () => Auth::user()->hasRole('Centro')
+                            ? ['default' => 1, 'lg' => 9]
+                            : ['default' => 1, 'lg' => 7]),
+                    TextInput::make('weekly_hours')
                         ->label('IHS')
                         ->required()
                         ->numeric()
                         ->minValue(1)
                         ->default(1)
-                        ->columnSpan(2),
+                        ->columnSpan(fn () => Auth::user()->hasRole('Centro')
+                            ? ['default' => 1, 'lg' => 3]
+                            : ['default' => 1, 'lg' => 2]),
                 ]),
             ]);
     }
@@ -71,15 +93,15 @@ class SubjectsRelationManager extends RelationManager
                 $user = Auth::user();
 
                 if ($user->hasAnyRoleId([
-                    \App\Models\User::ROLE_DIRECTIVO,
-                    \App\Models\User::ROLE_SOPORTE,
+                    User::ROLE_DIRECTIVO,
+                    User::ROLE_SOPORTE,
                 ])) {
                     return $query;
                 }
 
                 if ($user->hasAnyRoleId([
-                    \App\Models\User::ROLE_AREA,
-                    \App\Models\User::ROLE_DOCENTE,
+                    User::ROLE_AREA,
+                    User::ROLE_DOCENTE,
                 ]))
                 {
                     return $query->whereHas('users', fn ($q) => $q->where('users.id', $user->id));
@@ -89,19 +111,19 @@ class SubjectsRelationManager extends RelationManager
             })
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('grade')
+                TextColumn::make('grade')
                     ->label('Grado')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label('Asignatura')
                     ->wrap()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('weekly_hours')
+                TextColumn::make('weekly_hours')
                     ->label('IHS')
                     ->numeric()
                     ->alignCenter(),
-                Tables\Columns\TextColumn::make('users.name')
+                TextColumn::make('users.name')
                     ->label('Docentes')
                     ->listWithLineBreaks()
                     ->limitList(3)
@@ -112,42 +134,42 @@ class SubjectsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('abrir')
                     ->label('')
                     ->color('success')
                     ->tooltip('Editar')
-                    ->iconSize('h-6 w-6')
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large)
                     ->icon('heroicon-o-pencil-square')
                     ->url(fn ($record) => SubjectResource::getUrl('edit', ['record' => $record])),
-                Tables\Actions\DeleteAction::make()
+                DeleteAction::make()
                     ->label('')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
                     ->tooltip('Borrar')
-                    ->iconSize('h-6 w-6'),
-                Tables\Actions\ViewAction::make()
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
+                ViewAction::make()
                     ->label('')
                     ->icon('heroicon-o-eye')
                     ->color('secondary')
                     ->tooltip('Ver')
-                    ->iconSize('h-6 w-6')
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large)
                     ->modalHeading(fn ($record) => $record->plan->name . ': ' . $record->name),
-                Tables\Actions\ReplicateAction::make()
+                ReplicateAction::make()
                     ->label('')
                     ->icon('heroicon-o-document-duplicate')
                     ->color('gray')
                     ->tooltip('Duplicar')
-                    ->iconSize('h-6 w-6')
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large)
                     ->visible(fn () => Auth::user()->hasAnyRoleId([User::ROLE_SOPORTE, User::ROLE_DIRECTIVO])),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            ->toolbarActions([
+                BulkActionGroup::make([
                     ExportBulkAction::make()
                         ->label('Exportar Excel'),
-                    Tables\Actions\DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

@@ -38,6 +38,8 @@ class SsoController extends Controller
 
     private const SESSION_CHECK_LAST_AT = 'sso.session_check.last_checked_at';
 
+    private const SESSION_CHECK_REDIRECT_URI = 'sso.session_check.redirect_uri';
+
     public function __construct(private readonly OidcClient $oidcClient)
     {
     }
@@ -60,6 +62,10 @@ class SsoController extends Controller
 
     public function callback(Request $request): RedirectResponse
     {
+        if (Auth::guard('web')->check() && ! $request->session()->has(self::LOGIN_STATE)) {
+            return redirect()->to(Filament::getUrl());
+        }
+
         if ($request->filled('error')) {
             return $this->fail('No se pudo completar la autenticación institucional.');
         }
@@ -133,15 +139,17 @@ class SsoController extends Controller
             ], static fn (mixed $value): bool => $value !== null),
         );
 
-        if ($user->wasRecentlyCreated) {
-            $docenteRole = Role::query()
-                ->where('name', 'Docente')
-                ->where('guard_name', 'web')
-                ->first();
+        $docenteRole = Role::query()
+            ->where('name', 'Docente')
+            ->where('guard_name', 'web')
+            ->first();
 
-            if ($docenteRole && method_exists($user, 'assignRole')) {
-                $user->assignRole($docenteRole);
-            }
+        if (
+            $docenteRole
+            && method_exists($user, 'assignRole')
+            && ! $user->roles()->exists()
+        ) {
+            $user->assignRole($docenteRole);
         }
 
         Auth::guard('web')->login($user);
@@ -161,6 +169,7 @@ class SsoController extends Controller
             return redirect()->to(Filament::getLoginUrl());
         }
 
+        $sessionCheckRedirectUri = $this->resolveSessionCheckRedirectUri();
         $state = Str::random(64);
         $nonce = Str::random(64);
         $codeVerifier = Str::random(96);
@@ -172,11 +181,18 @@ class SsoController extends Controller
             self::SESSION_CHECK_VERIFIER => $codeVerifier,
             self::SESSION_CHECK_IN_PROGRESS => true,
             self::SESSION_CHECK_STARTED_AT => now()->timestamp,
+            self::SESSION_CHECK_REDIRECT_URI => $sessionCheckRedirectUri,
         ]);
 
         $prompt = trim((string) config('sso.session_check_prompt', 'none'));
 
-        return redirect()->away($this->oidcClient->buildAuthorizationUrl($state, $codeChallenge, $nonce, $prompt));
+        return redirect()->away($this->oidcClient->buildAuthorizationUrl(
+            $state,
+            $codeChallenge,
+            $nonce,
+            $prompt,
+            $sessionCheckRedirectUri
+        ));
     }
 
     public function completeSessionCheck(Request $request): RedirectResponse
@@ -212,8 +228,14 @@ class SsoController extends Controller
             return $this->logoutForExpiredIdpSession($request);
         }
 
+        $sessionCheckRedirectUri = trim((string) $request->session()->get(self::SESSION_CHECK_REDIRECT_URI, ''));
+
+        if ($sessionCheckRedirectUri === '') {
+            $sessionCheckRedirectUri = $this->resolveSessionCheckRedirectUri();
+        }
+
         try {
-            $tokens = $this->oidcClient->exchangeCodeForTokens($code, $codeVerifier);
+            $tokens = $this->oidcClient->exchangeCodeForTokens($code, $codeVerifier, $sessionCheckRedirectUri);
             $idToken = (string) ($tokens['id_token'] ?? '');
 
             if ($idToken === '') {
@@ -382,6 +404,13 @@ class SsoController extends Controller
         return $returnTo !== '' ? $returnTo : null;
     }
 
+    private function resolveSessionCheckRedirectUri(): string
+    {
+        $configured = trim((string) config('sso.session_check_redirect_uri', ''));
+
+        return $configured !== '' ? $configured : url('/sso/session-check/callback');
+    }
+
     private function clearSessionCheckState(Request $request): void
     {
         $request->session()->forget([
@@ -391,6 +420,7 @@ class SsoController extends Controller
             self::SESSION_CHECK_NONCE,
             self::SESSION_CHECK_VERIFIER,
             self::SESSION_CHECK_RETURN_TO,
+            self::SESSION_CHECK_REDIRECT_URI,
         ]);
     }
 

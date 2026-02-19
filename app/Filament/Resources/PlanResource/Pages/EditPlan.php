@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\PlanResource\Pages;
 
+use Filament\Actions\DeleteAction;
+use Illuminate\Database\Eloquent\Model;
 use App\Filament\Resources\PlanResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -13,14 +15,14 @@ class EditPlan extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
     }
-    protected function resolveRecord($key): \Illuminate\Database\Eloquent\Model
+    protected function resolveRecord($key): Model
     {
         return parent::resolveRecord($key)->loadMissing('schoolProfile');
     }

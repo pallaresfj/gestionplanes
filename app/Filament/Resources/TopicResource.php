@@ -2,18 +2,31 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
+use Filament\Forms\Components\RichEditor;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ViewAction;
+use Filament\Actions\ReplicateAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use App\Filament\Resources\TopicResource\Pages\ListTopics;
+use App\Filament\Resources\TopicResource\Pages\CreateTopic;
+use App\Filament\Resources\TopicResource\Pages\EditTopic;
 use App\Filament\Resources\TopicResource\Pages;
 use App\Filament\Resources\TopicResource\RelationManagers;
 use App\Models\Topic;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Grouping\Group;
 
 use Filament\Forms\Components\Select;
-use Filament\Forms\Get;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Subject;
 use App\Models\User;
@@ -25,16 +38,16 @@ class TopicResource extends Resource
 {
     protected static ?string $model = Topic::class;
     protected static ?int $navigationSort = 3;
-    protected static ?string $navigationGroup = 'Planes de área';
+    protected static string | \UnitEnum | null $navigationGroup = 'Planes de área';
     protected static ?string $modelLabel = 'Contenido';
     protected static ?string $pluralLabel = 'Contenidos';
 
-    protected static ?string $navigationIcon = 'heroicon-o-table-cells';
-    public static function form(Form $form): Form
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-table-cells';
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('period')
+        return $schema
+            ->components([
+                Select::make('period')
                     ->label('Periodo')
                     ->native(false)
                     ->placeholder('Seleccione un periodo')
@@ -78,9 +91,13 @@ class TopicResource extends Resource
                     ->searchable()
                     ->preload()
                     ->required(),
-                Forms\Components\Grid::make(2)
+                Grid::make([
+                    'default' => 1,
+                    'lg' => 2,
+                ])
+                ->columnSpanFull()
                 ->schema([
-                    Forms\Components\RichEditor::make('standard')
+                    RichEditor::make('standard')
                     ->label(fn (Get $get) => ((string) (Subject::find($get('subject_id'))?->grade) === '0') ? 'Principio' : 'Estándar')
                     ->disableToolbarButtons([
                         'attachFiles',
@@ -89,7 +106,7 @@ class TopicResource extends Resource
                         'codeBlock',
                         'link',
                     ]),
-                Forms\Components\RichEditor::make('dba')
+                RichEditor::make('dba')
                     ->label('DBA')
                     ->disableToolbarButtons([
                         'attachFiles',
@@ -98,7 +115,7 @@ class TopicResource extends Resource
                         'codeBlock',
                         'link',
                     ]),
-                Forms\Components\RichEditor::make('competencies')
+                RichEditor::make('competencies')
                     ->label('Competencias')
                     ->disableToolbarButtons([
                         'attachFiles',
@@ -107,7 +124,7 @@ class TopicResource extends Resource
                         'codeBlock',
                         'link',
                     ]),
-                Forms\Components\RichEditor::make('contents')
+                RichEditor::make('contents')
                     ->label('Contenidos')
                     ->disableToolbarButtons([
                         'attachFiles',
@@ -124,30 +141,30 @@ class TopicResource extends Resource
         return $table
 
             ->columns([
-                Tables\Columns\TextColumn::make('period')
+                TextColumn::make('period')
                     ->label('Periodo')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('subject.name')
+                TextColumn::make('subject.name')
                     ->label('Asignatura')
                     ->wrap()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('standard')
+                TextColumn::make('standard')
                     ->label('Estándar')
                     ->html()
                     ->wrap()
                     ->lineClamp(2),
-                Tables\Columns\TextColumn::make('dba')
+                TextColumn::make('dba')
                     ->label('DBA')
                     ->html()
                     ->wrap()
                     ->lineClamp(2),
-                Tables\Columns\TextColumn::make('competencies')
+                TextColumn::make('competencies')
                     ->label('Competencias')
                     ->html()
                     ->wrap()
                     ->lineClamp(2),
-                Tables\Columns\TextColumn::make('contents')
+                TextColumn::make('contents')
                     ->label('Contenidos')
                     ->html()
                     ->wrap()
@@ -165,7 +182,7 @@ class TopicResource extends Resource
             ->defaultGroup('period')
             ->groupingDirectionSettingHidden()
             ->filters([
-                Tables\Filters\SelectFilter::make('period')
+                SelectFilter::make('period')
                     ->label('Periodo')
                     ->options([
                         '1' => 'Primero',
@@ -174,49 +191,49 @@ class TopicResource extends Resource
                     ])
                     ->searchable(),
 
-                Tables\Filters\SelectFilter::make('subject_id')
+                SelectFilter::make('subject_id')
                     ->label('Asignatura')
                     ->relationship('subject', 'name')
                     ->searchable(),
 
-                Tables\Filters\SelectFilter::make('subject.plan_id')
+                SelectFilter::make('subject.plan_id')
                     ->label('Área')
                     ->relationship('subject.plan', 'name')
                     ->searchable(),
             ])
             ->persistFiltersInSession()
-            ->actions([
-                Tables\Actions\EditAction::make()
+            ->recordActions([
+                EditAction::make()
                     ->label('')
                     ->icon('heroicon-o-pencil-square')
                     ->color('success')
                     ->tooltip('Editar')
-                    ->iconSize('h-6 w-6'),
-                Tables\Actions\DeleteAction::make()
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
+                DeleteAction::make()
                     ->label('')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
                     ->tooltip('Borrar')
-                    ->iconSize('h-6 w-6'),
-                Tables\Actions\ViewAction::make()
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
+                ViewAction::make()
                     ->label('')
                     ->icon('heroicon-o-eye')
                     ->color('secondary')
                     ->tooltip('Ver')
-                    ->iconSize('h-6 w-6')
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large)
                     ->modalHeading(fn ($record) => 'Periodo ' . $record->period . ': ' . $record->subject->name),
-                Tables\Actions\ReplicateAction::make()
+                ReplicateAction::make()
                     ->label('')
                     ->icon('heroicon-o-document-duplicate')
                     ->color('gray')
                     ->tooltip('Duplicar')
-                    ->iconSize('h-6 w-6'),
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            ->toolbarActions([
+                BulkActionGroup::make([
                     ExportBulkAction::make()
                         ->label('Exportar Excel'),
-                    Tables\Actions\DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -231,9 +248,9 @@ class TopicResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTopics::route('/'),
-            'create' => Pages\CreateTopic::route('/create'),
-            'edit' => Pages\EditTopic::route('/{record}/edit'),
+            'index' => ListTopics::route('/'),
+            'create' => CreateTopic::route('/create'),
+            'edit' => EditTopic::route('/{record}/edit'),
         ];
     }
     public static function getEloquentQuery(): Builder

@@ -3,11 +3,10 @@
 namespace App\Filament\Auth\Responses;
 
 use Filament\Facades\Filament;
-use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
 use Illuminate\Http\RedirectResponse;
 use Livewire\Features\SupportRedirects\Redirector;
 
-class LogoutResponse implements LogoutResponseContract
+class LogoutResponse implements \Filament\Auth\Http\Responses\Contracts\LogoutResponse
 {
     public function toResponse($request): RedirectResponse | Redirector
     {
@@ -20,7 +19,7 @@ class LogoutResponse implements LogoutResponseContract
 
         $targetUrl = $this->appendQuery($idpLogoutUrl, [
             'continue' => $continueUrl,
-            'source' => config('sso.client_key', 'gestionplanes'),
+            'source' => config('sso.frontchannel_logout_client_key', config('sso.client_key', 'gestionplanes-f5')),
         ]);
 
         return redirect()->away($targetUrl);

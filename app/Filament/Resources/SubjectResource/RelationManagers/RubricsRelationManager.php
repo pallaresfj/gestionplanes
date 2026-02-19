@@ -2,8 +2,18 @@
 
 namespace App\Filament\Resources\SubjectResource\RelationManagers;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ViewAction;
+use Filament\Actions\ReplicateAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -19,11 +29,11 @@ class RubricsRelationManager extends RelationManager
     protected static ?string $pluralLabel = 'Rúbricas';
     protected static ?string $title = 'Rúbricas';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('period')
+        return $schema
+            ->components([
+                Select::make('period')
                     ->label('Periodo')
                     ->native(false)
                     ->placeholder('Seleccione un periodo')
@@ -34,23 +44,23 @@ class RubricsRelationManager extends RelationManager
                     ])
                     ->columnSpanFull()
                     ->required(),
-                Forms\Components\Textarea::make('criterion')
+                Textarea::make('criterion')
                     ->label('Criterio')
                     ->rows(2)
                     ->columnSpanFull(),
-                Forms\Components\Textarea::make('superior_level')
+                Textarea::make('superior_level')
                     ->label('Superior')
                     ->rows(3)
                     ->maxLength(255),
-                Forms\Components\Textarea::make('high_level')
+                Textarea::make('high_level')
                     ->label('Alto')
                     ->rows(3)
                     ->maxLength(255),
-                Forms\Components\Textarea::make('basic_level')
+                Textarea::make('basic_level')
                     ->label('Básico')
                     ->rows(3)
                     ->maxLength(255),
-                Forms\Components\Textarea::make('low_level')
+                Textarea::make('low_level')
                     ->label('Bajo')
                     ->rows(3)
                     ->maxLength(255),
@@ -62,31 +72,31 @@ class RubricsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('period')
             ->columns([
-                Tables\Columns\TextColumn::make('period')
+                TextColumn::make('period')
                     ->label('Periodo')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('subject.name')
+                TextColumn::make('subject.name')
                     ->label('Asignatura')
                     ->wrap()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('criterion')
+                TextColumn::make('criterion')
                     ->label('Criterio')
                     ->wrap()
                     ->lineClamp(2),
-                Tables\Columns\TextColumn::make('superior_level')
+                TextColumn::make('superior_level')
                     ->label('Superior')
                     ->wrap()
                     ->lineClamp(2),
-                Tables\Columns\TextColumn::make('high_level')
+                TextColumn::make('high_level')
                     ->label('Alto')
                     ->wrap()
                     ->lineClamp(2),
-                Tables\Columns\TextColumn::make('basic_level')
+                TextColumn::make('basic_level')
                     ->label('Básico')
                     ->wrap()
                     ->lineClamp(2),
-                Tables\Columns\TextColumn::make('low_level')
+                TextColumn::make('low_level')
                     ->label('Bajo')
                     ->wrap()
                     ->lineClamp(2),
@@ -103,40 +113,40 @@ class RubricsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make()
+            ->recordActions([
+                EditAction::make()
                     ->label('')
                     ->icon('heroicon-o-pencil-square')
                     ->color('success')
                     ->tooltip('Editar')
-                    ->iconSize('h-6 w-6'),
-                Tables\Actions\DeleteAction::make()
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
+                DeleteAction::make()
                     ->label('')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
                     ->tooltip('Borrar')
-                    ->iconSize('h-6 w-6'),
-                Tables\Actions\ViewAction::make()
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
+                ViewAction::make()
                     ->label('')
                     ->icon('heroicon-o-eye')
                     ->color('secondary')
                     ->tooltip('Ver')
-                    ->iconSize('h-6 w-6')
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large)
                     ->modalHeading(fn ($record) => 'Periodo ' . $record->period . ': ' . $record->subject->name),
-                Tables\Actions\ReplicateAction::make()
+                ReplicateAction::make()
                     ->label('')
                     ->icon('heroicon-o-document-duplicate')
                     ->color('gray')
                     ->tooltip('Duplicar')
-                    ->iconSize('h-6 w-6'),
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            ->toolbarActions([
+                BulkActionGroup::make([
                     ExportBulkAction::make()
                         ->label('Exportar Excel'),
-                    Tables\Actions\DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

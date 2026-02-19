@@ -78,7 +78,7 @@
         @foreach ($planes as $plan)
             <article class="bg-white shadow-md rounded-lg overflow-hidden">
                 <a href="/plan/{{ $plan->id }}" class="hover:opacity-75">
-                    <img src="/storage/{{ $plan->cover }}" alt="" class="w-full h-48 object-cover">
+                    <img src="{{ $plan->cover_url }}" alt="" class="w-full h-48 object-cover">
                 </a> 
                 <div class="p-6">
                     <span class="text-green-600 text-sm font-semibold">{{ $plan->year }}</span>

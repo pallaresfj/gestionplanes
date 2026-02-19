@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     public const ROLE_SUPERADMIN = 1;
     public const ROLE_SOPORTE = 2;
@@ -22,7 +24,7 @@ class User extends Authenticatable implements FilamentUser
     public const ROLE_DOCENTE = 6;
 
 
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasRoles;
 
     /**
@@ -72,6 +74,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->profile_photo_path
             ? asset('storage/' . $this->profile_photo_path)
             : null;
+    }
+
+    public function getAvatarUrlAttribute(): ?string
+    {
+        return $this->getFilamentAvatarUrl();
     }
 
     public function centers() : HasMany

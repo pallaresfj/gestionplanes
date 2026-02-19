@@ -58,7 +58,7 @@
     <section class="max-w-7xl mx-auto px-4 py-10">
       <div class="w-full">
             <article class="bg-white shadow-md rounded-lg overflow-hidden w-full">
-                <img src="/storage/{{ $center->image_path }}" alt="" class="w-full h-48 object-cover">
+                <img src="{{ $center->image_url }}" alt="" class="w-full h-48 object-cover">
                 <div class="p-6">
                     <span class="text-green-600 text-sm font-semibold">{{ $center->academic_year }}</span>
                     <h4 class="block mt-2 mb-3 transition text-xl font-semibold">{{ $center->name }}</h4>

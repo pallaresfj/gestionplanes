@@ -2,9 +2,18 @@
 
 namespace App\Filament\Resources\CenterResource\RelationManagers;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Forms\Components\Grid;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -19,34 +28,50 @@ class TeachersRelationManager extends RelationManager
     protected static ?string $pluralLabel = 'Profesores';
     protected static ?string $title = 'Profesores';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-        ->schema([
-            Grid::make(3)->schema([
-                Forms\Components\TextInput::make('full_name')
+        return $schema
+        ->components([
+            Grid::make([
+                'default' => 1,
+                'lg' => 12,
+            ])
+                ->columnSpanFull()
+                ->schema([
+                TextInput::make('full_name')
                     ->label('Nombre Completo')
                     ->required()
                     ->maxLength(150)
-                    ->columnSpan(2),
-                Forms\Components\FileUpload::make('profile_photo_path')
+                    ->columnSpan([
+                        'default' => 1,
+                        'lg' => 9,
+                    ]),
+                FileUpload::make('profile_photo_path')
                     ->label('Foto')
                     ->image()
                     ->imageEditor()
                     ->directory('teachers')
-                    ->columnSpan(1),
+                    ->columnSpan([
+                        'default' => 1,
+                        'lg' => 3,
+                    ]),
             ]),
-            Grid::make(3)->schema([
-                Forms\Components\TextInput::make('identification')
+            Grid::make([
+                'default' => 1,
+                'lg' => 3,
+            ])
+                ->columnSpanFull()
+                ->schema([
+                TextInput::make('identification')
                     ->label('Identificación')
                     ->unique(ignorable: fn ($record) => $record)
                     ->required()
                     ->maxLength(20),
-                Forms\Components\TextInput::make('email')
+                TextInput::make('email')
                     ->label('Correo Electrónico')
                     ->email()
                     ->maxLength(100),
-                Forms\Components\TextInput::make('phone')
+                TextInput::make('phone')
                     ->label('Teléfono')
                     ->required()
                     ->tel()
@@ -60,25 +85,25 @@ class TeachersRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('full_name')
             ->columns([
-                Tables\Columns\ImageColumn::make('profile_photo_path')
+                ImageColumn::make('profile_photo_path')
                     ->label('Foto')
                     ->circular()
                     ->height(48)
                     ->width(48)
                     ->defaultImageUrl(asset('images/default-avatar.png'))
                     ->extraImgAttributes(['class' => 'object-cover border border-gray-300 shadow-sm']),
-                Tables\Columns\TextColumn::make('full_name')
+                TextColumn::make('full_name')
                     ->label('Nombre')
                     ->wrap()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('identification')
+                TextColumn::make('identification')
                     ->label('Identificación')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email')
+                TextColumn::make('email')
                     ->label('Correo')
                     ->wrap()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('phone')
+                TextColumn::make('phone')
                     ->label('Teléfono')
                     ->searchable(),
             ])
@@ -86,27 +111,27 @@ class TeachersRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make()
+            ->recordActions([
+                EditAction::make()
                     ->label('')
                     ->icon('heroicon-o-pencil-square')
                     ->color('warning')
                     ->tooltip('Editar')
-                    ->iconSize('h-6 w-6'),
-                Tables\Actions\DeleteAction::make()
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
+                DeleteAction::make()
                     ->label('')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
                     ->tooltip('Borrar')
-                    ->iconSize('h-6 w-6'),
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            ->toolbarActions([
+                BulkActionGroup::make([
                     ExportBulkAction::make()
                         ->label('Exportar Excel'),
-                    Tables\Actions\DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

@@ -1,4 +1,11 @@
 <style>
+    .fi-sidebar-header-logo-ctn .fi-logo,
+    .fi-topbar .fi-logo {
+        height: 2rem !important;
+        width: auto !important;
+        max-height: 2rem !important;
+    }
+
     .fi-topbar .fi-user-menu {
         display: none;
     }

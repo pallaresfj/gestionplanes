@@ -18,6 +18,7 @@ return [
     'session_check_interval_seconds' => (int) env('SSO_SESSION_CHECK_INTERVAL_SECONDS', 60),
     'session_check_timeout_seconds' => (int) env('SSO_SESSION_CHECK_TIMEOUT_SECONDS', 12),
     'session_check_prompt' => env('SSO_SESSION_CHECK_PROMPT', 'none'),
+    'session_check_redirect_uri' => env('SSO_SESSION_CHECK_REDIRECT_URI', rtrim((string) env('APP_URL', 'http://localhost'), '/').'/sso/session-check/callback'),
     'idp_logout_url' => env('SSO_IDP_LOGOUT_URL', rtrim((string) env('SSO_ISSUER', 'http://localhost:8000'), '/').'/logout'),
     'client_key' => mb_strtolower(trim((string) env('SSO_CLIENT_KEY', 'gestionplanes'))),
     'frontchannel_logout_client_key' => mb_strtolower(trim((string) env('SSO_FRONTCHANNEL_LOGOUT_CLIENT_KEY', env('SSO_CLIENT_KEY', 'gestionplanes')))),

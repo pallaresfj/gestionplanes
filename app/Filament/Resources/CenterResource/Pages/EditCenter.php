@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\CenterResource\Pages;
 
+use Filament\Actions\DeleteAction;
 use App\Filament\Resources\CenterResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -13,7 +14,7 @@ class EditCenter extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
     protected function getRedirectUrl(): string

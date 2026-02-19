@@ -2,6 +2,9 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\AdminDashboard;
+use Illuminate\Contracts\View\View;
+use App\Filament\AvatarProviders\CustomAvatarProvider;
 use App\Http\Middleware\EnsureIdpSessionIsAlive;
 use App\Filament\Pages\Auth\Login as FilamentLogin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -10,11 +13,9 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
-use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\View\PanelsRenderHook;
-use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -42,23 +43,21 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->font('Poppins')
             ->favicon(asset('images/favicon.png'))
+            ->brandLogoHeight('2rem')
             ->renderHook(
                 PanelsRenderHook::SIDEBAR_FOOTER,
-                fn (): \Illuminate\Contracts\View\View => view('filament.hooks.sidebar-user-menu'),
+                fn (): View => view('filament.hooks.sidebar-user-menu'),
             )
             ->renderHook(
                 PanelsRenderHook::HEAD_END,
-                fn (): \Illuminate\Contracts\View\View => view('filament.hooks.sidebar-user-menu-styles'),
+                fn (): View => view('filament.hooks.sidebar-user-menu-styles'),
             )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                AdminDashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
-            ->widgets([
-                Widgets\AccountWidget::class,
-            ])
             ->navigationGroups([
                 NavigationGroup::make()
                      ->label('Centros de interés')
@@ -71,7 +70,7 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-cog-6-tooth')
                     ->collapsed(),
             ])
-            ->defaultAvatarProvider(\App\Filament\AvatarProviders\CustomAvatarProvider::class)
+            ->defaultAvatarProvider(CustomAvatarProvider::class)
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

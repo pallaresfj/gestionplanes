@@ -2,8 +2,19 @@
 
 namespace App\Filament\Resources\SubjectResource\RelationManagers;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
+use Filament\Schemas\Components\Grid;
+use Filament\Forms\Components\RichEditor;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ViewAction;
+use Filament\Actions\ReplicateAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -19,11 +30,11 @@ class TopicsRelationManager extends RelationManager
     protected static ?string $pluralLabel = 'Contenidos';
     protected static ?string $title = 'Contenidos';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('period')
+        return $schema
+            ->components([
+                Select::make('period')
                     ->label('Periodo')
                     ->native(false)
                     ->placeholder('Seleccione un periodo')
@@ -35,9 +46,13 @@ class TopicsRelationManager extends RelationManager
                     ->columnSpanFull()
                     ->required(),
                 
-                Forms\Components\Grid::make(2)
+                Grid::make([
+                    'default' => 1,
+                    'lg' => 2,
+                ])
+                ->columnSpanFull()
                 ->schema([
-                    Forms\Components\RichEditor::make('standard')
+                    RichEditor::make('standard')
                     ->label(fn () => ((string) ($this->getOwnerRecord()?->grade) === '0') ? 'Principio' : 'Estándar')
                     ->disableToolbarButtons([
                         'attachFiles',
@@ -46,7 +61,7 @@ class TopicsRelationManager extends RelationManager
                         'codeBlock',
                         'link',
                     ]),
-                    Forms\Components\RichEditor::make('dba')
+                    RichEditor::make('dba')
                     ->label('DBA')
                     ->disableToolbarButtons([
                         'attachFiles',
@@ -55,7 +70,7 @@ class TopicsRelationManager extends RelationManager
                         'codeBlock',
                         'link',
                     ]),
-                Forms\Components\RichEditor::make('competencies')
+                RichEditor::make('competencies')
                     ->label('Competencias')
                     ->disableToolbarButtons([
                         'attachFiles',
@@ -64,7 +79,7 @@ class TopicsRelationManager extends RelationManager
                         'codeBlock',
                         'link',
                     ]),
-                Forms\Components\RichEditor::make('contents')
+                RichEditor::make('contents')
                     ->label('Contenidos')
                     ->disableToolbarButtons([
                         'attachFiles',
@@ -81,26 +96,26 @@ class TopicsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('period')
             ->columns([
-                Tables\Columns\TextColumn::make('period')
+                TextColumn::make('period')
                     ->label('Periodo')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('standard')
+                TextColumn::make('standard')
                     ->label(fn () => ((string) ($this->getOwnerRecord()?->grade) === '0') ? 'Principio' : 'Estándar')
                     ->html()
                     ->wrap()
                     ->lineClamp(2),
-                Tables\Columns\TextColumn::make('dba')
+                TextColumn::make('dba')
                     ->label('DBA')
                     ->html()
                     ->wrap()
                     ->lineClamp(2),
-                Tables\Columns\TextColumn::make('competencies')
+                TextColumn::make('competencies')
                     ->label('Competencias')
                     ->html()
                     ->wrap()
                     ->lineClamp(2),
-                Tables\Columns\TextColumn::make('contents')
+                TextColumn::make('contents')
                     ->label('Contenidos')
                     ->html()
                     ->wrap()
@@ -118,40 +133,40 @@ class TopicsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make()
+            ->recordActions([
+                EditAction::make()
                     ->label('')
                     ->icon('heroicon-o-pencil-square')
                     ->color('success')
                     ->tooltip('Editar')
-                    ->iconSize('h-6 w-6'),
-                Tables\Actions\DeleteAction::make()
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
+                DeleteAction::make()
                     ->label('')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
                     ->tooltip('Borrar')
-                    ->iconSize('h-6 w-6'),
-                Tables\Actions\ViewAction::make()
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
+                ViewAction::make()
                     ->label('')
                     ->icon('heroicon-o-eye')
                     ->color('secondary')
                     ->tooltip('Ver')
-                    ->iconSize('h-6 w-6')
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large)
                     ->modalHeading(fn ($record) => 'Periodo ' . $record->period . ': ' . $record->subject->name),
-                Tables\Actions\ReplicateAction::make()
+                ReplicateAction::make()
                     ->label('')
                     ->icon('heroicon-o-document-duplicate')
                     ->color('gray')
                     ->tooltip('Duplicar')
-                    ->iconSize('h-6 w-6'),
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            ->toolbarActions([
+                BulkActionGroup::make([
                     ExportBulkAction::make()
                         ->label('Exportar Excel'),
-                    Tables\Actions\DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

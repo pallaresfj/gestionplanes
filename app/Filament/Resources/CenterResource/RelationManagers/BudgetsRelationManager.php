@@ -2,9 +2,18 @@
 
 namespace App\Filament\Resources\CenterResource\RelationManagers;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ViewAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Forms\Components\Grid;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -22,28 +31,45 @@ class BudgetsRelationManager extends RelationManager
     protected static ?string $pluralLabel = 'Recursos';
     protected static ?string $title = 'Recursos';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-        ->schema([
-            Grid::make(3)->schema([
-                Forms\Components\TextInput::make('quantity')
+        return $schema
+        ->components([
+            Grid::make([
+                'default' => 1,
+                'lg' => 10,
+            ])
+                ->columnSpanFull()
+                ->schema([
+                TextInput::make('quantity')
                     ->label('Cantidad')
                     ->required()
                     ->numeric()
                     ->minValue(1)
-                    ->default(1),
-                Forms\Components\TextInput::make('item')
+                    ->default(1)
+                    ->columnSpan([
+                        'default' => 1,
+                        'lg' => 2,
+                    ]),
+                TextInput::make('item')
                     ->label('Item')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('unit_value')
+                    ->maxLength(255)
+                    ->columnSpan([
+                        'default' => 1,
+                        'lg' => 5,
+                    ]),
+                TextInput::make('unit_value')
                     ->label('Valor Unitario')
                     ->required()
                     ->numeric()
-                    ->default(0.00),
+                    ->default(0.00)
+                    ->columnSpan([
+                        'default' => 1,
+                        'lg' => 3,
+                    ]),
             ]),
-            Forms\Components\Textarea::make('observations')
+            Textarea::make('observations')
                 ->label('Observaciones')
                 ->placeholder('Dejar en blanco si no hay observaciones')
                 ->columnSpanFull(),
@@ -64,7 +90,7 @@ class BudgetsRelationManager extends RelationManager
                 TextInputColumn::make('unit_value')
                     ->label('Valor Unitario')
                     ->rules(['numeric', 'min:1']),
-                Tables\Columns\TextColumn::make('total_value')
+                TextColumn::make('total_value')
                     ->label('Total')
                     ->summarize(
                         Sum::make()
@@ -75,7 +101,7 @@ class BudgetsRelationManager extends RelationManager
                             ->html()
                     )
                     ->money('COP', locale: 'es_CO'),
-                Tables\Columns\TextColumn::make('observations')
+                TextColumn::make('observations')
                     ->label('Observaciones')
                     ->lineClamp(1)
                     ->wrap(),
@@ -84,34 +110,34 @@ class BudgetsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make()
+            ->recordActions([
+                EditAction::make()
                     ->label('')
                     ->icon('heroicon-o-pencil-square')
                     ->color('warning')
                     ->tooltip('Editar')
-                    ->iconSize('h-6 w-6'),
-                Tables\Actions\DeleteAction::make()
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
+                DeleteAction::make()
                     ->label('')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
                     ->tooltip('Borrar')
-                    ->iconSize('h-6 w-6'),
-                Tables\Actions\ViewAction::make()
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large),
+                ViewAction::make()
                     ->label('')
                     ->icon('heroicon-o-eye')
                     ->color('secondary')
                     ->tooltip('Ver')
-                    ->iconSize('h-6 w-6')
+                    ->iconSize(\Filament\Support\Enums\IconSize::Large)
                     ->modalHeading(fn ($record) => $record->item),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            ->toolbarActions([
+                BulkActionGroup::make([
                     ExportBulkAction::make()
                         ->label('Exportar Excel'),
-                    Tables\Actions\DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
