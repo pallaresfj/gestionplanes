@@ -20,7 +20,7 @@ class LogoutResponse implements LogoutResponseContract
 
         $targetUrl = $this->appendQuery($idpLogoutUrl, [
             'continue' => $continueUrl,
-            'source' => config('sso.client_key', 'gestionplanes'),
+            'source' => config('sso.frontchannel_logout_client_key', config('sso.client_key', 'gestionplanes')),
         ]);
 
         return redirect()->away($targetUrl);
