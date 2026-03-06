@@ -7,7 +7,7 @@ Esta guía deja `gestionplanes` listo para Dokploy usando `docker-compose.dokplo
 - `Dockerfile`: build de producción (PHP 8.4 + Apache + assets Vite).
 - `.dockerignore`: reduce contexto de build y evita subir secretos locales.
 - `docker/entrypoint.sh`: prepara permisos y `storage:link`.
-- `docker-compose.dokploy.yml`: servicios `web`, `queue`, `scheduler`, `mysql`, `redis`.
+- `docker-compose.dokploy.yml`: servicios `web`, `queue`, `scheduler`, `redis`.
 - `.env.dokploy.example`: plantilla de variables para Dokploy.
 
 ## 2) Crear la app en Dokploy
@@ -27,7 +27,6 @@ Mínimos obligatorios:
 - `APP_KEY` (generar con: `php -r "echo 'base64:'.base64_encode(random_bytes(32)).PHP_EOL;"`)
 - `APP_URL`
 - `DB_*`
-- `DB_ROOT_PASSWORD` (solo si usas el MySQL del compose)
 - `SSO_*` (si el login SSO está activo)
 
 Recomendado para producción:
@@ -89,13 +88,13 @@ Verificar logs en Dokploy:
 - `queue`: jobs fallidos.
 - `scheduler`: ejecución por minuto de `schedule:run`.
 
-## 7) Si usarás DB/Redis externos
+## 7) Si usarás Redis externo
 
 Edita `docker-compose.dokploy.yml`:
 
-1. Elimina servicios `mysql` y `redis`.
-2. Elimina `depends_on` correspondientes de `web`, `queue`, `scheduler`.
-3. Ajusta `DB_HOST` y `REDIS_HOST` a hostnames externos.
+1. Elimina servicio `redis`.
+2. Elimina `depends_on.redis` de `web`, `queue`, `scheduler`.
+3. Ajusta `REDIS_HOST` al hostname externo.
 
 ## 8) Notas de seguridad
 
@@ -104,5 +103,4 @@ Edita `docker-compose.dokploy.yml`:
 - Mantén volúmenes persistentes para:
   - `/var/www/html/storage`
   - `/var/www/html/bootstrap/cache`
-  - `/var/lib/mysql` (si usas mysql del compose)
   - `/data` (si usas redis del compose)
