@@ -4,10 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DEST_PUBLIC_DIR="$ROOT_DIR/storage/app/public"
 
-SOURCE_DIRS=(
-  "/Users/pallaresfj/Herd/gestionplanes/storage/app/public"
-  "/Users/pallaresfj/Herd/plan/storage/app/public"
-)
+IFS=':' read -r -a SOURCE_DIRS <<< "${MEDIA_SYNC_SOURCE_DIRS:-/Users/pallaresfj/Herd/plan/storage/app/public}"
 
 mkdir -p "$DEST_PUBLIC_DIR/plan-cover" "$DEST_PUBLIC_DIR/center-cover"
 
@@ -41,6 +38,10 @@ copy_missing_from_source() {
 }
 
 for source_dir in "${SOURCE_DIRS[@]}"; do
+  if [[ "$source_dir" == "$DEST_PUBLIC_DIR" ]]; then
+    continue
+  fi
+
   copy_missing_from_source "$source_dir"
 done
 

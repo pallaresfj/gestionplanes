@@ -1,12 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\SsoController;
 use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Route;
 
-/* Route::get('/', function () {
-    return view('welcome');
-}); */
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/planes', [HomeController::class, 'planes'])->name('planes');
 Route::get('/plan/{id}', [HomeController::class, 'plandetail'])->name('plan');

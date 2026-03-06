@@ -89,6 +89,7 @@ it('starts silent idp session check for authenticated users', function () {
             Mockery::type('string'),
             Mockery::type('string'),
             'none',
+            url('/sso/session-check/callback'),
         )
         ->andReturn('https://idp.example/authorize');
 
