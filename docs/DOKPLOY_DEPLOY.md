@@ -37,8 +37,23 @@ Recomendado para producción:
 - `QUEUE_CONNECTION=redis`
 - `CACHE_STORE=redis`
 - `SESSION_DRIVER=redis`
+- `SESSION_SECURE_COOKIE=true`
+
+Importante para cookies/sesión:
+
+- `SESSION_DOMAIN` debe quedar vacío (`SESSION_DOMAIN=`) para usar el host actual.
+- No uses el literal `null` (`SESSION_DOMAIN=null`) porque rompe persistencia de sesión en algunos entornos.
 
 ## 4) Primer despliegue
+
+Antes de ejecutar cachés, valida señal técnica en el servicio `web`:
+
+```bash
+printenv APP_URL SESSION_DOMAIN SESSION_SECURE_COOKIE APP_ENV APP_DEBUG
+php artisan migrate:status
+php artisan route:list --path=livewire
+php artisan route:list --path=admin
+```
 
 Después del primer deploy, correr una sola vez en el servicio `web`:
 
@@ -81,6 +96,12 @@ No necesitas `queue:restart` manual: el contenedor `queue` se recrea en cada des
 - Login panel: `/admin/login`
 - Panel: `/admin`
 - Público: `/planes`, `/centers`
+
+Chequeo post-login del panel:
+
+1. Abrir DevTools > Network en `/admin`.
+2. Confirmar que las peticiones `/livewire/*` (por ejemplo `/livewire/update`) respondan `200`.
+3. Si hay `419/401/500`, revisar variables de sesión y logs de `web`.
 
 Verificar logs en Dokploy:
 
